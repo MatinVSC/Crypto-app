@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useLogin } from "../authentication/useLogin";
+import { useForm } from "react-hook-form";
 
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
@@ -8,42 +8,54 @@ import FormRowVertical from "../../ui/FormRowVertical";
 import SpinnerMini from '../../ui/SpinnerMini';
 
 function LoginForm() {
-  const [email, setEmail] = useState("www.matinvsc@gmail.com");
-  const [password, setPassword] = useState("Ab1122878");
+  const { register: loginForm, formState, handleSubmit, reset } = useForm();
+  const { errors } = formState;
   const { login, isLoading } = useLogin();
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  function onSubmit({ email, password }) {
 
     if (!email || !password) return
     login({ email, password }, {
-      onSettled: () => {
-        setEmail("www.");
-        setPassword("");
-      }
+      onSettled: () => reset()
     });
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <FormRowVertical label="Email address">
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <FormRowVertical label="Email address" error={errors?.email?.message}>
         <Input
           type="email"
           id="email"
+          {...loginForm('email',
+            {
+              require: 'This field is required',
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: 'Please provide a valid email address'
+              }
+            }
+          )}
           // This makes this form better for password managers
           autoComplete="username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          defaultValue={"www."}
           disabled={isLoading}
         />
       </FormRowVertical>
-      <FormRowVertical label="Password">
+      <FormRowVertical label="Password" error={errors?.password?.message}>
         <Input
           type="password"
           id="password"
+          {...loginForm('password',
+            {
+              require: 'This field is required',
+              minLength: {
+                value: 8,
+                message: 'Password needs a minimum of 8 Characters'
+              }
+            }
+          )}
           autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          defaultValue={""}
           disabled={isLoading}
         />
       </FormRowVertical>

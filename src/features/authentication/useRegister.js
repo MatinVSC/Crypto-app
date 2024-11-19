@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { Register } from "../../services/apiAuth";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -6,16 +6,17 @@ import { useAuth } from "../../context/AuthContext";
 
 
 export function useRegister() {
-    const queryClient = useQueryClient();
     const navigate = useNavigate();
     const { setIsRegistered } = useAuth();
 
-    const { mutate: register, isLoading } = useMutation({
+    const { mutate: register, isLoading, error } = useMutation({
         mutationFn: ({ email, password }) => Register({ email, password }),
-        onSuccess: (user) => {
-            queryClient.setQueryData(['user'], user);
-            setIsRegistered(true);
-            navigate('/dashboard');
+        onSuccess: (data) => {
+            if (!data.error) {
+                toast.success('Account successfully created !')
+                setIsRegistered(true);
+                navigate('/dashboard');
+            }
         },
         onError: err => {
             console.log(err)
@@ -23,5 +24,5 @@ export function useRegister() {
         }
     })
 
-    return { register, isLoading }
+    return { register, isLoading, error }
 }
