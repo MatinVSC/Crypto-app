@@ -14,7 +14,6 @@ export async function Register({ email, password }) {
 
         if (!response.ok) {
             toast.error("Error processing the request. Please try again later.")
-
         }
 
         const register = await response.json();
@@ -47,3 +46,4 @@ export async function Login({ email, password }) {
         throw new Error(error.message);
     }
 };
+

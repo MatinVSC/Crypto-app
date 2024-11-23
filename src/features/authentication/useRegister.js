@@ -11,8 +11,10 @@ export function useRegister() {
 
     const { mutate: register, isLoading, error } = useMutation({
         mutationFn: ({ email, password }) => Register({ email, password }),
-        onSuccess: (data) => {
-            if (!data.error) {
+        onSuccess: (user) => {
+            const { session } = user?.data
+            if (!user.error) {
+                localStorage.setItem('userSession', session)
                 toast.success('Account successfully created !')
                 setIsRegistered(true);
                 navigate('/dashboard');
