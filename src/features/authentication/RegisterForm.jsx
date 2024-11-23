@@ -23,8 +23,6 @@ function RegisterForm() {
         });
     }
 
-    if (error) return toast.error(error)
-
     return (
         <Form onSubmit={handleSubmit(onSubmit)} type="regular">
             <FormRowVertical label="Email address" error={errors?.email?.message}>

@@ -65,7 +65,7 @@ function MainNav() {
         <li>
           <StyledNavLink to="/coins">
             <SiBitcoinsv />
-            <span>Coins</span>
+            <span>Wallet</span>
           </StyledNavLink>
         </li>
         <li>
