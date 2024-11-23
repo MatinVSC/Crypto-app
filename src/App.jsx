@@ -15,6 +15,8 @@ import Plans from "./pages/Plans";
 import Transactions from "./pages/Transactions";
 import GetTickets from './pages/GetTickets';
 import ProtectedRoute from "./ui/ProtectedRoute";
+import CoinDeposit from "./pages/CoinDeposit";
+import CoinWithdraw from './pages/CoinWithdraw'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +24,7 @@ const queryClient = new QueryClient({
       staleTime: 60 * 1000,
     }
   }
-})
+});
 
 function App() {
 
@@ -42,6 +44,8 @@ function App() {
               <Route index element={<Navigate replace to="dashboard" />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="coins" element={<Coins />} />
+              <Route path="coins/deposit/:coinId" element={<CoinDeposit />} />
+              <Route path="coins/withdraw/:coinId" element={<CoinWithdraw />} />
               <Route path="plans" element={<Plans />} />
               <Route path="gett" element={<Transactions />} />
               <Route path="getTickets" element={<GetTickets />} />

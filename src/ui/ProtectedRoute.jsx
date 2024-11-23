@@ -4,8 +4,9 @@ import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
   const { isRegistered } = useAuth();
+  const userSession = localStorage.getItem('userSession');
 
-  return isRegistered ? children : <Navigate to="/register" />;
+  return (isRegistered || userSession) ? children : <Navigate to="/register" />;
 };
 
 export default ProtectedRoute;
