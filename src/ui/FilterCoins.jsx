@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import styled, { css } from "styled-components";
 
 const StyledFilter = styled.div`
@@ -36,15 +36,22 @@ const FilterButton = styled.button`
 `;
 
 
-export default function Filter({ filterField, options, transactionUser = [] }) {
+export default function Filter({ filterField, options }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentFilter = searchParams.get(filterField) || options.at(0).value;
+  const navigate = useNavigate();
 
   function handelClick(value) {
     searchParams.set(filterField, value);
     setSearchParams(searchParams)
-    return transactionUser.filter(transaction => +transaction.status === +value);
+
+    if (value === 'all') return
+
+    value === "plans"
+      ? navigate('/plans/history/i')
+      : navigate(`/gett/${value}`);
   }
+
 
   return (
     <StyledFilter>
