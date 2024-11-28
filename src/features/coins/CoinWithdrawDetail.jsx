@@ -14,7 +14,7 @@ import Button from '../../ui/Button';
 // import { useBooking } from 'features/bookings/useBooking';
 // import { useDeleteBooking } from './useDeleteBooking';
 import { useMoveBack } from '../../hooks/useMoveBack';
-import { useParams } from 'react-router-dom';
+import { HiArrowLeft } from 'react-icons/hi2';
 
 // import { useCheckout } from 'features/check-in-out/useCheckout';
 // import ButtonText from '../../ui/ButtonText';
@@ -42,7 +42,7 @@ function CoinWithdrawDetil() {
 
       <ButtonGroup>
         <Button variation='secondary' onClick={moveBack}>
-          Back
+          {<HiArrowLeft />} Back
         </Button>
       </ButtonGroup>
     </>

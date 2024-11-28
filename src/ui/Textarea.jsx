@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Button from "./Button";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const StyledTextarea = styled.textarea`
   padding: 0.8rem 1.2rem;
@@ -21,6 +22,7 @@ const Container = styled.div`
 
 
 export default function TextArea({ walletAdress }) {
+  const navigate = useNavigate();
 
   const handelCopyAddress = async () => {
     try {
@@ -49,6 +51,10 @@ export default function TextArea({ walletAdress }) {
         <StyledTextarea value={walletAdress} readOnly />
         <Button onClick={handelCopyAddress}>
           Copy Wallet Address
+        </Button>
+        <Button
+         onClick={() => navigate('/gett')}>
+          see Transactions
         </Button>
       </Container>
     ) : (

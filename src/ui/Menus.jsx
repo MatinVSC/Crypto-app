@@ -6,6 +6,7 @@ import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const Menu = styled.div`
   display: flex;
+  gap: 2rem;
   align-items: center;
   justify-content: flex-end;
 `;
@@ -42,7 +43,7 @@ const StyledList = styled.ul`
 
 const StyledButton = styled.button`
   width: 100%;
-  text-align: left;
+  text-align: center;
   background: none;
   border: none;
   padding: 1.2rem 2.2rem;
@@ -51,12 +52,9 @@ const StyledButton = styled.button`
   color: aliceblue;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
   border-radius: 7%;
-
-  /* &:hover {
-    background-color: var(--color-grey-50);
-  } */
 
   & svg {
     width: 1.6rem;

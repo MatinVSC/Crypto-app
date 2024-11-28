@@ -12,7 +12,7 @@ import {
   HiOutlineHomeModern,
 } from 'react-icons/hi2';
 import DataItem from '../../ui/DataItem';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Form from '../../ui/Form';
 import FormRowVertical from '../../ui/FormRowVertical';
 import Input from '../../ui/Input';
@@ -21,6 +21,7 @@ import Button from '../../ui/Button';
 import SpinnerMini from '../../ui/SpinnerMini';
 import { useQuery } from 'react-query';
 import { useWithdrawCoin } from './useWithdrawCoin';
+import { useEffect, useState } from 'react';
 // import { Flag } from 'ui/Flag';
 
 const StyledBookingDataBox = styled.section`
@@ -66,6 +67,7 @@ const Section = styled.section`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   align-items: center;
+  justify-content: center;
   gap: 1.2rem;
   width: 100%;
   padding: 3.2rem 4rem 1.2rem;
@@ -73,6 +75,7 @@ const Section = styled.section`
 
 const Guest = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1.2rem;
@@ -87,9 +90,10 @@ const Guest = styled.div`
 
 const Price = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 1.6rem 3.2rem;
+  gap: 2rem;
+  padding: 3rem 3.2rem;
   border-radius: var(--border-radius-sm);
   margin-top: 2.4rem;
 
@@ -111,31 +115,25 @@ const Price = styled.div`
   }
 `;
 
-const Footer = styled.footer`
-  padding: 1.6rem 4rem;
-  font-size: 1.2rem;
-  color: var(--color-grey-500);
-  text-align: right;
-`;
-
 function CoinWithdrawBox() {
+  const [isSucess, setIsSuccess] = useState("");
   const { coinId } = useParams();
   const { register: withderawForm, formState: { errors }, handleSubmit } = useForm();
   const { withdrawCoin, isLoading } = useWithdrawCoin();
-  const { data } = useQuery(['walletWithdraw'], {
+  const { data: transactionId } = useQuery(["walletWithdraw"], {
     enabled: false
   });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    transactionId && setIsSuccess(transactionId);
+  }, [transactionId])
 
   function onSubmit({ value, walletAddress }) {
-    console.log({ value, walletAddress });
-
-
     value = Number(value)
 
     if (!value || !coinId) return
-    withdrawCoin({ value, coinId, walletAddress }, {
-      onSettled: () => console.log("inja navigate mikonim")
-    })
+    withdrawCoin({ value, coinId, walletAddress });
   };
 
   return (
@@ -153,7 +151,7 @@ function CoinWithdrawBox() {
       <Section>
 
         <Guest>
-          <Form type="modal" onSubmit={handleSubmit(onSubmit)}>
+          <Form type="form" onSubmit={handleSubmit(onSubmit)}>
             <FormRowVertical label="value USDT" error={errors?.value?.message}>
               <Input
                 type="number"
@@ -208,18 +206,27 @@ function CoinWithdrawBox() {
             </FormRowVertical>
           </Form>
         </Guest>
+
+        {transactionId ? (
+          <Guest>
+            <Price isPaid={true}>
+              <DataItem icon={<HiOutlineCurrencyDollar />} label={`Your Withdraw was Successfuly .`}>
+              </DataItem>
+              <p>Transaction id : {transactionId}</p>
+            </Price>
+            <Button onClick={() => navigate('/gett')}>
+              see Transactions
+            </Button>
+          </Guest>
+        ) : (
+          <Guest>
+            <div>
+              <p>Please set your withdraw values !</p>
+            </div>
+          </Guest>
+        )}
       </Section>
 
-      <Price isPaid={"empty"}>
-        <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
-          <p>empty</p>
-        </DataItem>
-
-        {/* <p>{isPaid ? 'Paid' : 'Will pay at property'}</p> */}
-      </Price>
-      <Footer>
-        <p>Booked</p>
-      </Footer>
     </StyledBookingDataBox>
   );
 }

@@ -5,7 +5,7 @@ const StyledFormRow = styled.div`
   align-items: center;
 
   grid-template-columns: ${(props) =>
-    props.orientation === "vertical" ? "1fr" : "24rem 1fr 1.2fr"};
+    props.orientation === "vertical" ? "1fr" : "26rem 1fr 2fr"};
   gap: ${(props) => (props.orientation === "vertical" ? "0.8rem" : "2.4rem")};
 
   padding: 1.2rem 0;

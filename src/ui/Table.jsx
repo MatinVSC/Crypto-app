@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const StyledTable = styled.div`
   border: 2px solid var(--color-grey-200);
@@ -7,8 +7,16 @@ const StyledTable = styled.div`
   background-color: var(--color-grey-0);
   border-radius: 7px;
   overflow: hidden;
+`;
+
+const StyleddPlans = styled.div`
   display: flex;
-  gap: 10rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 4rem 2.4rem;
+  border-radius: 12px;
 `;
 
 const CommonRow = styled.div`
@@ -30,9 +38,7 @@ const StyledHeader = styled(CommonRow)`
 `;
 
 const StyledRow = styled(CommonRow)`
-  display: flex;
-  flex-direction: column;
-  padding: 4rem 4rem;
+  padding: 2rem 2.4rem;
   border: 1px solid var(--color-grey-500);
   border-radius: 12px;
 `;
@@ -40,7 +46,7 @@ const StyledRow = styled(CommonRow)`
 const StyledBody = styled.section`
   display: grid;
   grid-template-columns: 500px 500px;
-  gap: 10rem;
+  gap: 5rem;
   margin: 4rem 4rem;
 `;
 
@@ -81,12 +87,22 @@ function Header({ children }) {
     </StyledHeader>
   );
 }
+
 function Row({ children }) {
   const { columns } = useContext(TableContext);
   return (
     <StyledRow role="row" columns={columns}>
       {children}
     </StyledRow>
+  );
+}
+
+function Plans({ children }) {
+  const { columns } = useContext(TableContext);
+  return (
+    <StyleddPlans role="row" columns={columns}>
+      {children}
+    </StyleddPlans>
   );
 }
 
@@ -99,6 +115,7 @@ function Body({ data, render }) {
 Table.Header = Header;
 Table.Body = Body;
 Table.Row = Row;
+Table.Plans = Plans;
 Table.Footer = Footer;
 
 export default Table;

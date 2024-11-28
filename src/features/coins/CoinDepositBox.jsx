@@ -12,7 +12,7 @@ import {
   HiOutlineHomeModern,
 } from 'react-icons/hi2';
 import DataItem from '../../ui/DataItem';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Form from '../../ui/Form';
 import FormRowVertical from '../../ui/FormRowVertical';
 import Input from '../../ui/Input';
@@ -68,6 +68,7 @@ const Section = styled.section`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   align-items: center;
+  justify-content: center;
   gap: 1.2rem;
   width: 100%;
   padding: 3.2rem 4rem 1.2rem;
@@ -113,12 +114,12 @@ const Price = styled.div`
   }
 `;
 
-const Footer = styled.footer`
-  padding: 1.6rem 4rem;
-  font-size: 1.2rem;
-  color: var(--color-grey-500);
-  text-align: right;
-`;
+// const Footer = styled.footer`
+//   padding: 1.6rem 4rem;
+//   font-size: 1.2rem;
+//   color: var(--color-grey-500);
+//   text-align: right;
+// `;
 
 function CoinDepositBox() {
   const [walletAdress, setWalletAdress] = useState("")
@@ -138,9 +139,7 @@ function CoinDepositBox() {
     value = Number(value)
 
     if (!value || !coinId) return
-    depositCoin({ value, coinId }, {
-      onSettled: () => console.log("inja navigate mikonim")
-    })
+    depositCoin({ value, coinId })
   };
 
   return (
@@ -158,7 +157,7 @@ function CoinDepositBox() {
       <Section>
 
         <Guest>
-          <Form type="modal" onSubmit={handleSubmit(onSubmit)}>
+          <Form type="form" onSubmit={handleSubmit(onSubmit)}>
             <FormRowVertical label="value USDT" error={errors?.value?.message}>
               <Input
                 type="number"
@@ -195,7 +194,6 @@ function CoinDepositBox() {
         <Guest>
           <TextArea walletAdress={walletAdress} />
         </Guest>
-
       </Section>
 
       <Price isPaid={"empty"}>
@@ -205,9 +203,7 @@ function CoinDepositBox() {
 
         {/* <p>{isPaid ? 'Paid' : 'Will pay at property'}</p> */}
       </Price>
-      <Footer>
-        <p>Booked</p>
-      </Footer>
+
     </StyledBookingDataBox>
   );
 }
