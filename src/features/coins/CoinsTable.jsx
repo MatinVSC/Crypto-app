@@ -8,14 +8,12 @@ import { useCoins } from './useCoins';;
 
 
 function CoinsTable() {
-  const { coinsData = [], isLoading } = useCoins();
-  const { data: coin } = coinsData
-
-  console.log(coin);
-  
+  const { coinsData, isLoading } = useCoins();
 
   if (isLoading) return <Spinner />;
-  if (!coinsData) return <Empty resource={'bookings'} />;
+  if (!coinsData) return <Empty resource={'coins'} />;
+
+  const { data: coin } = coinsData
 
   return (
     <Menus>
@@ -23,9 +21,9 @@ function CoinsTable() {
       <Table columns='1fr 1fr 1fr 1fr'>
         <Table.Header>
           <div>Coin</div>
-          <div style={{marginLeft: "3.5rem"}}>name</div>
+          <div style={{ marginLeft: "3.5rem" }}>name</div>
           <div>price</div>
-          <div style={{marginLeft: "8rem"}}>transaction</div>
+          <div style={{ marginLeft: "8rem" }}>transaction</div>
         </Table.Header>
 
         {coin.map((coin) => (
@@ -33,12 +31,12 @@ function CoinsTable() {
         ))}
 
         {/* Render props! */}
-        <Table.Body
+        {/* <Table.Body
           data={coin}
           render={(coin) => (
             <CoinsRow key={coin.id} coin={coin} />
           )}
-        />
+        /> */}
 
         {/* <Table.Footer>
           <Pagination count={} />

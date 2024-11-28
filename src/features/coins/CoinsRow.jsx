@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 // import Tag from '../../ui/Tag';
 import Menus from '../../ui/Menus';
-import Modal from '../../ui/Modal';
+// import Modal from '../../ui/Modal';
 import Table from '../../ui/Table';
 
 // v1
@@ -105,7 +105,6 @@ function CoinsRow({
       {/* </Amount> */}
 
       {/* VIDEO we could export this into own component... */}
-      <Modal>
         <Menus.Menu>
           {/* <Menus.Toggle id={id} /> */}
           {/* <Menus.List id={id}> */}
@@ -151,7 +150,6 @@ function CoinsRow({
           // disabled={isDeleting}
           />
         </Modal.Window> */}
-      </Modal>
 
       {/* <div>
         <ButtonWithConfirm

@@ -6,6 +6,8 @@ import Menus from '../../ui/Menus';
 // import Empty from 'ui/Empty';
 // import { useSearchParams } from 'react-router-dom';
 import { usePlans } from './usePlans';
+import Spinner from '../../ui/Spinner';
+import Empty from '../../ui/Empty';
 // import Plans from '../../pages/Plans';
 // import { Suspense } from 'react';
 
@@ -29,15 +31,12 @@ import { usePlans } from './usePlans';
 // `;
 
 function PlanseTable() {
-  const { plansData = {} } = usePlans();
-  const { data: plans = {} } = plansData
+  const { plansData, isLoading } = usePlans();
 
-  console.log(plans);
+  if (isLoading) return <Spinner />;
+  if (!plansData) return <Empty resource={'plans'} />;
 
-
-  // if (isLoading) return <Spinner />;
-  // if (!plans) return <Empty resource={'cabins'} />;
-
+  const { data: plans } = plansData
 
   return (
     <Menus>
