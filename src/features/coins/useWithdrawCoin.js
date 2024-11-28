@@ -7,10 +7,8 @@ export function useWithdrawCoin() {
 
     const { mutate: withdrawCoin, isLoading, error } = useMutation({
         mutationFn: ({ value, coinId, walletAddress }) => getWithdrawCoin({ value, coinId, walletAddress }),
-        onSuccess: (data) => {
-            console.log(data);
-            
-            queryClient.setQueryData(["walletWithdraw"], data);
+        onSuccess: (data) => {            
+            queryClient.setQueryData(["walletWithdraw"], data.data);
             toast.success("Your withdrawal was successful")
         },
         onError: err => {
