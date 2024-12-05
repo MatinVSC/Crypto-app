@@ -1,76 +1,88 @@
-import { useUser } from 'features/authentication/useUser';
-import { useState } from 'react';
-import Button from 'ui/Button';
-import FileInput from 'ui/FileInput';
-import Form from 'ui/Form';
-import FormRow from 'ui/FormRow';
-import Input from 'ui/Input';
+import { useUserData } from '../dashboard/useUserData';
+import Button from '../../ui/Button';
+import Form from '../../ui/Form';
+import FormRow from '../../ui/FormRow';
+import Input from '../../ui/Input';
+import Spinner from '../../ui/Spinner';
 import { useUpdateUser } from './useUpdateUser';
+import { useForm } from 'react-hook-form';
+import SpinnerMini from '../../ui/SpinnerMini';
+
 
 function UpdateUserDataForm() {
   // We don't need the loading state
-  const {
-    user: {
-      email,
-      user_metadata: { fullName: currentFullName },
-    },
-  } = useUser();
+  const { userData, isLoading } = useUserData();
+  const { updateUser, isLoading: isUpdating } = useUpdateUser();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-  const [fullName, setFullName] = useState(currentFullName);
-  const [avatar, setAvatar] = useState(null);
+  // formState, getValues, reset
 
-  const { mutate: updateUser, isLoading: isUpdating } = useUpdateUser();
+  if (isLoading) return <Spinner />
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (!fullName) return;
+  const { email, password: userPassword } = userData;
 
-    updateUser(
-      { fullName, avatar },
-      {
-        onSuccess: () => {
-          setAvatar(null);
-          // Resetting form using .reset() that's available on all HTML form elements, otherwise the old filename will stay displayed in the UI
-          e.target.reset();
-        },
-      }
-    );
-  }
+  function onSubmit({ email, CurrentPasswordForm: currentPassword }) {
 
-  function handleCancel(e) {
-    // We don't even need preventDefault because this button was designed to reset the form (remember, it has the HTML attribute 'reset')
-    setFullName(currentFullName);
-    setAvatar(null);
-  }
+    if (!email || !currentPassword) return;
+
+    updateUser({ email, currentPassword }, {
+      onSuccess: () => reset()
+    });
+
+  };
+
+
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <FormRow label='Email address'>
+    <Form type="blue" onSubmit={handleSubmit(onSubmit)}>
+
+      <FormRow type="blue" label='Email address'>
         <Input value={email} disabled />
       </FormRow>
-      <FormRow label='Full name'>
+
+
+      <FormRow label='New Email Address'
+        error={errors?.email?.message}
+      >
         <Input
-          type='text'
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
+          type='email'
+          id='email'
           disabled={isUpdating}
-          id='fullName'
+          {...register('email',
+            {
+              require: 'This field is required',
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: 'Please provide a valid email address'
+              }
+            }
+          )}
         />
       </FormRow>
-      <FormRow label='Avatar image'>
-        <FileInput
+
+      <FormRow label='Current Password'
+        error={errors?.currentPasswordForm?.message}
+      >
+        <Input
+          type='password'
+          id='CurrentPasswordForm'
           disabled={isUpdating}
-          id='avatar'
-          accept='image/*'
-          onChange={(e) => setAvatar(e.target.files[0])}
-          // We should also validate that it's actually an image, but never mind
+          {...register("CurrentPasswordForm", {
+            required: "current Password is required",
+            validate: (value) =>
+              value === userPassword || "Password does not match",
+          })}
         />
       </FormRow>
+
       <FormRow>
-        <Button onClick={handleCancel} type='reset' variation='secondary'>
+        <Button type='reset' variation='secondary'>
           Cancel
         </Button>
-        <Button disabled={isUpdating}>Update account</Button>
+        <Button disabled={isUpdating}>
+          {!isUpdating ? 'Update account' : <SpinnerMini />}
+
+        </Button>
       </FormRow>
     </Form>
   );

@@ -1,68 +1,69 @@
 import { useForm } from 'react-hook-form';
-import Button from 'ui/Button';
-import Form from 'ui/Form';
-import FormRow from 'ui/FormRow';
-import Input from 'ui/Input';
+import Button from '../../ui/Button';
+import Form from '../../ui/Form';
+import FormRow from '../../ui/FormRow';
+import Input from '../../ui/Input';
 import { useUpdateUser } from './useUpdateUser';
+import Spinner from '../../ui/Spinner';
+import SpinnerMini from '../../ui/SpinnerMini';
+import { useUserData } from '../dashboard/useUserData';
 
 function UpdatePasswordForm() {
-  const { register, handleSubmit, formState, getValues, reset } = useForm();
-  const { errors } = formState;
+  const { userData, isLoading } = useUserData();
+  const { updateUser, isLoading: isUpdating } = useUpdateUser();
+  const { register, handleSubmit, formState: { errors }, getValues, reset } = useForm();
 
-  const { mutate: updateUser, isLoading: isUpdating } = useUpdateUser();
+  if (isLoading) return <Spinner />;
+  const { password: userPassword } = userData;
 
-  function onSubmit({ password }) {
-    updateUser({ password }, { onSuccess: () => reset() });
-  }
+  function onSubmit({ currentPassword, newPassword }) {
+    if (!currentPassword || !newPassword) return;
 
-  function handleReset(e) {
-    // e.preventDefault();
-    reset();
+    updateUser({ currentPassword, newPassword }, {
+      onSuccess: () => reset()
+    });
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form type="blue" onSubmit={handleSubmit(onSubmit)}>
       <FormRow
-        label='Password (min 8 characters)'
-        error={errors?.password?.message}
+        label="Current Password"
+        error={errors?.currentPassword?.message}
       >
         <Input
-          type='password'
-          id='password'
-          // this makes the form better for password managers
-          autoComplete='current-password'
+          type="text"
+          id="currentPassword"
           disabled={isUpdating}
-          {...register('password', {
-            required: 'This field is required',
-            minLength: {
-              value: 8,
-              message: 'Password needs a minimum of 8 characters',
-            },
+          {...register("currentPassword", {
+            required: "Current Password is required",
+            validate: (value) =>
+              value === userPassword || "Password does not match",
           })}
         />
       </FormRow>
 
       <FormRow
-        label='Confirm password'
-        error={errors?.passwordConfirm?.message}
+        label="New password (min 8 characters)"
+        error={errors?.newPassword?.message}
       >
         <Input
-          type='password'
-          autoComplete='new-password'
-          id='passwordConfirm'
+          type="text"
+          id="newPassword"
           disabled={isUpdating}
-          {...register('passwordConfirm', {
-            required: 'This field is required',
+          {...register("newPassword", {
+            required: "This field is required",
             validate: (value) =>
-              getValues().password === value || 'Passwords need to match',
+              getValues().currentPassword !== value || "The password must be changed",
           })}
         />
       </FormRow>
       <FormRow>
-        <Button onClick={handleReset} type='reset' variation='secondary'>
+        <Button type="reset" variation="secondary">
           Cancel
         </Button>
-        <Button disabled={isUpdating}>Update password</Button>
+        <Button disabled={isUpdating}>
+          {!isUpdating ? "Update password" : <SpinnerMini />}
+        </Button>
       </FormRow>
     </Form>
   );
