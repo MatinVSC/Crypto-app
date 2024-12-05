@@ -1,28 +1,24 @@
 import TransactionRow from './TransactionRow';
-import Spinner from '../../ui/Spinner';
 import Table from '../../ui/Table';
-import Empty from '../../ui/Empty';
+// import Empty from '../../ui/Empty';
 import Menus from '../../ui/Menus';
-import { useTransactionsUser } from './useTransactionsUser';
 import { useCoins } from '../coins/useCoins';
 import { useMemo, useState } from 'react';
 import Pagination from '../../ui/Pagination';
 import { PAGE_SIZE } from '../../utils/constants';
 
 
-function TransactionsTable({ transactionUser, isLoading }) {
+function TransactionsTable({ depositTransaction, withdrawTransaction, statusUrl, isLoading }) {
   const [currentPage, setCurrentPage] = useState(1);
-
   const { coinsData, isLoading: isLoadingCoins } = useCoins();
+  const currentFild = statusUrl === 'deposit' ? depositTransaction : withdrawTransaction;
 
   const currentTransactions = useMemo(() => {
+    if (!currentFild) return [];
     const start = (currentPage - 1) * PAGE_SIZE;
-    const end = (currentPage * PAGE_SIZE) + 1;
-    return transactionUser?.data?.slice(start, end);
-  }, [currentPage, transactionUser])
-
-  if (isLoading || isLoadingCoins) return <Spinner />;
-  if (!currentTransactions || !coinsData) return <Empty resource={'Transactions'} />;
+    const end = currentPage * PAGE_SIZE;
+    return currentFild.slice(start, end);
+  }, [currentPage, currentFild]);
 
 
   return (
@@ -46,7 +42,7 @@ function TransactionsTable({ transactionUser, isLoading }) {
 
         {currentTransactions.length > 0 && (
           <Table.Footer>
-            <Pagination count={transactionUser?.data.length}
+            <Pagination count={currentFild?.length || 0}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage} />
           </Table.Footer>

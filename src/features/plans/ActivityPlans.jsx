@@ -1,72 +1,72 @@
 import styled from "styled-components";
-import { useUserActivitedPlans } from './useUserActivitedPlans';
+import { useUserActivitedPlans } from "./useUserActivitedPlans";
 import Spinner from "../../ui/Spinner";
 import Row from "../../ui/Row";
 import Table from "../../ui/Table";
 import Heading from "../../ui/Heading";
+import Empty from "../../ui/Empty";
+import Button from "../../ui/Button";
+import { useMoveBack } from "../../hooks/useMoveBack";
+import { useLocation } from "react-router-dom";
+import { useMemo } from "react";
+import { format } from "date-fns";
 
-// کانتینر کلی تایملاین
 const TimelineContainer = styled.div`
   position: relative;
   margin: 20px auto;
-  min-width: 60%; /* بزرگ‌تر کردن عرض کلی */
+  min-width: 60%;
   padding: 20px;
 `;
 
-// خط تایملاین
 const TimelineLine = styled.div`
   position: absolute;
-  width: 6px; /* ضخیم‌تر کردن خط */
+  width: 6px;
   background-color: #007bff;
   top: 0;
   bottom: 0;
-  left: 50px; /* فاصله بیشتر از لبه */
+  left: 50px;
 `;
 
-// آیتم تایملاین
 const TimelineItem = styled.div`
   position: relative;
-  margin-left: 100px; /* افزایش فاصله از خط تایملاین */
-  margin-bottom: 25px; /* افزایش فاصله بین آیتم‌ها */
-  padding: 30px; /* افزایش پدینگ برای بزرگ‌تر شدن آیتم */
+  margin-left: 100px;
+  margin-bottom: 25px;
+  padding: 30px;
   background: #ffffff;
-  border: 2px solid #007bff; /* حاشیه آبی ضخیم‌تر */
-  border-radius: 12px; /* گوشه‌های گردتر */
-  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.2); /* سایه بزرگ‌تر */
+  border: 2px solid #007bff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.2);
   display: flex;
   flex-direction: column;
   gap: 15px;
 
   &:hover {
-    transform: translateY(-8px); /* حرکت بیشتر در هاور */
+    transform: translateY(-8px);
     box-shadow: 0 8px 16px rgba(0, 123, 255, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 `;
 
-// دایره تایملاین
 const TimelineDot = styled.div`
   position: absolute;
-  width: 16px; /* دایره بزرگ‌تر */
+  width: 16px;
   height: 16px;
   background-color: #007bff;
   border: 3px solid #ffffff;
   border-radius: 50%;
-  top: 65px; /* هم‌ترازی بهتر */
+  top: 65px;
   left: -58px;
 `;
 
-// عنوان پلن
 const PlanTitle = styled.h3`
-  font-size: 24px; /* فونت بزرگ‌تر */
+  font-size: 24px;
   font-weight: bold;
   color: #007bff;
   margin: 0;
 `;
 
-// جزئیات پلن
 const PlanDetail = styled.p`
-  font-size: 18px; /* فونت بزرگ‌تر */
+  font-size: 18px;
   margin: 5px 0;
   color: #555;
 
@@ -74,42 +74,62 @@ const PlanDetail = styled.p`
     font-weight: bold;
     color: #333;
   }
-`
+`;
 
 export default function ActivityPlans() {
-  const { userActivitedPlans, isLoading } = useUserActivitedPlans();
+  const { userActivitedPlans = [], isLoading } = useUserActivitedPlans();
+  const { state: plans } = useLocation();
+  const moveBack = useMoveBack();
 
-  if (isLoading) return <Spinner />
+  const plansMap = useMemo(() => {
+    return new Map(plans?.map((plan) => [plan.id, { name: plan.name, percentage: plan.percentage }]));
+  }, [plans]);
 
-  const { data } = userActivitedPlans;
+  if (isLoading) return <Spinner />;
+  if (!userActivitedPlans?.data || userActivitedPlans.data.length === 0) {
+    return <Empty resource="your activity plans" />;
+  }
 
-  console.log(data);
-
+  console.log(userActivitedPlans);
+  console.log(plans);
+  
+  
 
   return (
-
     <>
       <Row type="horizontal">
         <Heading as="h1">Your staking plans</Heading>
+        <Button variation="secondary" onClick={moveBack}>
+          Back
+        </Button>
       </Row>
 
       <Table>
         <TimelineContainer>
           <TimelineLine />
-          {data.map((plan) => (
-            <TimelineItem key={plan.id}>
-              <TimelineDot />
-              <PlanTitle>{plan.name}</PlanTitle>
-              <PlanDetail>
-                price investing :<span>${plan.investment}</span>
-              </PlanDetail>
-              <PlanDetail>
-                time stamp <span>{plan.activationTime}</span>
-              </PlanDetail>
-            </TimelineItem>
-          ))}
+          {userActivitedPlans.data?.map((plan) => {
+            const { name, percentage } = plansMap.get(plan.plan) || { name: "Unknown Plan", percentage: 0 };
+            const profit = (plan.value * percentage) / 100;
+
+            return (
+              <TimelineItem key={plan.id}>
+                <TimelineDot />
+                <PlanTitle>{name}</PlanTitle>
+                <PlanDetail>
+                  Value Investing : <span>${plan.value}</span>
+                </PlanDetail>
+                <PlanDetail>
+                profit in 30 day : <span>${profit.toFixed(2)}</span>
+                </PlanDetail>
+                <PlanDetail>
+                  Time Stamp : {" "}
+                  <span>{format(new Date(plan?.timestamp / 1000000), "yyyy-MM-dd HH:mm")}</span>
+                </PlanDetail>
+              </TimelineItem>
+            );
+          })}
         </TimelineContainer>
       </Table>
     </>
-  )
+  );
 }
