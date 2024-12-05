@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-const Heading = styled.h1`
+const Heading = styled.h2`
   ${(props) =>
     props.as === "h1" &&
     css`

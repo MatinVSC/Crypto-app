@@ -5,6 +5,7 @@ import { SiBitcoinsv } from "react-icons/si";
 import { TbBrandProducthunt } from "react-icons/tb";
 import { AiOutlineTransaction } from "react-icons/ai";
 import { BiSupport } from "react-icons/bi";
+import { PiUsersThreeFill } from "react-icons/pi";
 
 
 const NavList = styled.ul`
@@ -84,6 +85,12 @@ function MainNav() {
           <StyledNavLink to="/getTickets">
             <BiSupport />
             <span>Tickets</span>
+          </StyledNavLink>
+        </li>
+        <li>
+          <StyledNavLink to="/partnership">
+            <PiUsersThreeFill />
+            <span>Partnership</span>
           </StyledNavLink>
         </li>
       </NavList>

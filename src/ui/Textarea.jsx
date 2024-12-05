@@ -21,7 +21,7 @@ const Container = styled.div`
 `;
 
 
-export default function TextArea({ walletAdress }) {
+export default function TextArea({ walletAdress, coinName }) {
   const navigate = useNavigate();
 
   const handelCopyAddress = async () => {
@@ -47,7 +47,7 @@ export default function TextArea({ walletAdress }) {
   return (
     walletAdress ? (
       <Container>
-        <h3>Wallet Address USDT(BEP20)</h3>
+        <h3>Wallet Address {coinName}</h3>
         <StyledTextarea value={walletAdress} readOnly />
         <Button onClick={handelCopyAddress}>
           Copy Wallet Address

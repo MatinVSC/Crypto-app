@@ -18,10 +18,20 @@ const Form = styled.form`
       width: 80%;
     `}
 
-    ${(props) =>
+  ${(props) =>
     props.type === "modal" &&
     css`
       width: 70rem;
+    `}
+    
+  ${(props) =>
+    props.type === "blue" &&
+    css`
+      padding: 2.4rem 4rem;
+      background-color: #f0f8ff;
+      border: 2px solid #007bff;
+      border-radius: var(--border-radius-md);
+      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1);
     `}
     
   overflow: hidden;
@@ -29,7 +39,7 @@ const Form = styled.form`
 `;
 
 Form.defaultProps = {
-  type: 'regular'
-}
+  type: "regular",
+};
 
 export default Form;

@@ -40,7 +40,6 @@ function RegisterForm() {
                     )}
                     // This makes this form better for password managers
                     autoComplete="username"
-                    defaultValue={"www."}
                     // onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
                 />
@@ -61,7 +60,6 @@ function RegisterForm() {
                         }
                     )}
                     autoComplete="current-password"
-                    defaultValue={""}
                     // onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
                 />

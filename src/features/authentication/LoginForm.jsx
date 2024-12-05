@@ -37,7 +37,7 @@ function LoginForm() {
           )}
           // This makes this form better for password managers
           autoComplete="username"
-          defaultValue={"www."}
+          // defaultValue={"www."}
           disabled={isLoading}
         />
       </FormRowVertical>
@@ -55,7 +55,6 @@ function LoginForm() {
             }
           )}
           autoComplete="current-password"
-          defaultValue={""}
           disabled={isLoading}
         />
       </FormRowVertical>
