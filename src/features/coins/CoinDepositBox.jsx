@@ -12,7 +12,7 @@ import {
   HiOutlineHomeModern,
 } from 'react-icons/hi2';
 import DataItem from '../../ui/DataItem';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import Form from '../../ui/Form';
 import FormRowVertical from '../../ui/FormRowVertical';
 import Input from '../../ui/Input';
@@ -121,14 +121,23 @@ const Price = styled.div`
 //   text-align: right;
 // `;
 
-function CoinDepositBox() {
+function CoinDepositBox({ coinName, coinId }) {
   const [walletAdress, setWalletAdress] = useState("")
-  const { coinId } = useParams();
-  const { register: depositForm, formState: { errors }, handleSubmit } = useForm();
+  const { register: depositForm, formState: { errors }, handleSubmit, watch, setValue } = useForm();
   const { depositCoin, isLoading } = useDepositCoin();
   const { data } = useQuery(['walletDeposit'], {
     enabled: false
   });
+  const { price } = useLocation().state || {};
+
+  const valueInput = watch('value');
+
+  useEffect(() => {
+    if (valueInput) {
+      const coinDepositValue = (+valueInput / +price).toFixed(2);
+      setValue('coinDepositValue', coinDepositValue)
+    }
+  }, [valueInput, setValue, price])
 
   useEffect(() => {
     data && setWalletAdress(data.wallet)
@@ -148,7 +157,7 @@ function CoinDepositBox() {
         <div>
           <HiOutlineHomeModern />
           <p>
-            Form use Withderaw Value<span>(USDT)</span>
+            Form use Deposit Value<span>{coinName}</span>
           </p>
         </div>
 
@@ -180,6 +189,18 @@ function CoinDepositBox() {
                 disabled={isLoading}
               />
             </FormRowVertical>
+
+            <FormRowVertical label={`Deposit amount is equal to : ${coinName}`}
+              error={errors?.coinDepositValue?.message}>
+              <Input
+                type="number"
+                id="coinDepositValue"
+                disabled={isLoading}
+                {...depositForm('coinDepositValue')}
+                readOnly
+              />
+            </FormRowVertical>
+
             <FormRowVertical>
               <Button
                 size="large"
@@ -192,7 +213,7 @@ function CoinDepositBox() {
         </Guest>
 
         <Guest>
-          <TextArea walletAdress={walletAdress} />
+          <TextArea walletAdress={walletAdress} coinName={coinName} />
         </Guest>
       </Section>
 

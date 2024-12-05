@@ -12,7 +12,7 @@ import {
   HiOutlineHomeModern,
 } from 'react-icons/hi2';
 import DataItem from '../../ui/DataItem';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Form from '../../ui/Form';
 import FormRowVertical from '../../ui/FormRowVertical';
 import Input from '../../ui/Input';
@@ -21,7 +21,7 @@ import Button from '../../ui/Button';
 import SpinnerMini from '../../ui/SpinnerMini';
 import { useQuery } from 'react-query';
 import { useWithdrawCoin } from './useWithdrawCoin';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 // import { Flag } from 'ui/Flag';
 
 const StyledBookingDataBox = styled.section`
@@ -115,19 +115,29 @@ const Price = styled.div`
   }
 `;
 
-function CoinWithdrawBox() {
-  const [isSucess, setIsSuccess] = useState("");
-  const { coinId } = useParams();
-  const { register: withderawForm, formState: { errors }, handleSubmit } = useForm();
+function CoinWithdrawBox({ coinName, coinId }) {
+  // const [isSucess, setIsSuccess] = useState("");
+  const { register: withderawForm, formState: { errors }, handleSubmit, watch, setValue } = useForm();
   const { withdrawCoin, isLoading } = useWithdrawCoin();
   const { data: transactionId } = useQuery(["walletWithdraw"], {
     enabled: false
   });
   const navigate = useNavigate();
+  const { price } = useLocation().state || {};
+
+  const valueInput = watch('value');
+
+  // useEffect(() => {
+  //   transactionId && setIsSuccess(transactionId);
+  // }, [transactionId])
+
 
   useEffect(() => {
-    transactionId && setIsSuccess(transactionId);
-  }, [transactionId])
+    if (valueInput) {
+      const coinDepositValue = (+valueInput / +price).toFixed(2);
+      setValue('coinDepositValue', coinDepositValue)
+    }
+  }, [valueInput, setValue, price])
 
   function onSubmit({ value, walletAddress }) {
     value = Number(value)
@@ -142,7 +152,7 @@ function CoinWithdrawBox() {
         <div>
           <HiOutlineHomeModern />
           <p>
-            Form use Withderaw Value<span>(USDT)</span>
+            Form use Withderaw Value<span>{coinName}</span>
           </p>
         </div>
 
@@ -161,7 +171,7 @@ function CoinWithdrawBox() {
                     require: 'This field is required',
                     pattern: {
                       value: /^\d+$/,
-                      message: 'Please provide a valid number address'
+                      message: 'Please provide a valid number'
                     },
                     min: {
                       value: 50,
@@ -181,13 +191,9 @@ function CoinWithdrawBox() {
                 {...withderawForm('walletAddress',
                   {
                     require: 'This field is required',
-                    pattern: {
-                      value: /^0x[a-fA-F0-9]{40}$/,
-                      message: 'Please provide a valid address BEP20!'
-                    },
                     min: {
-                      value: 40,
-                      message: "Please provide a valid address BEP20."
+                      value: 26,
+                      message: "Please provide a valid address"
                     }
                   }
                 )}
@@ -196,6 +202,18 @@ function CoinWithdrawBox() {
                 disabled={isLoading}
               />
             </FormRowVertical>
+
+            <FormRowVertical label={`Deposit amount is equal to : ${coinName}`}
+              error={errors?.coinDepositValue?.message}>
+              <Input
+                type="number"
+                id="coinDepositValue"
+                disabled={isLoading}
+                {...withderawForm('coinDepositValue')}
+                readOnly
+              />
+            </FormRowVertical>
+
             <FormRowVertical>
               <Button
                 size="large"

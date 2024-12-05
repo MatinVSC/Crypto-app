@@ -27,18 +27,18 @@ const HeadingGroup = styled.div`
 `;
 
 function CoinDepositDetail() {
-
+  const { name, coinId } = useParams();
   const moveBack = useMoveBack();
 
   return (
     <>
       <Row type='horizontal'>
         <HeadingGroup>
-          <Heading type='h1'>Deposit Whit USDT</Heading>
+          <Heading type='h1'>Deposit Whit {name}</Heading>
         </HeadingGroup>
       </Row>
 
-      <CoinDepositBox />
+      <CoinDepositBox coinName={name} coinId={coinId} />
 
       <ButtonGroup>
         <Button variation='secondary' onClick={moveBack}>

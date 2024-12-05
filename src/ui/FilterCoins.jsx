@@ -48,8 +48,8 @@ export default function Filter({ filterField, options }) {
     if (value === 'all') return
 
     value === "plans"
-      ? navigate('/plans/history/i')
-      : navigate(`/gett/${value}`);
+      ? navigate('/plans')
+      : navigate(`/gett`);
   }
 
 

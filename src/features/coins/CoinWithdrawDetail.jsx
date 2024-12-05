@@ -15,6 +15,7 @@ import Button from '../../ui/Button';
 // import { useDeleteBooking } from './useDeleteBooking';
 import { useMoveBack } from '../../hooks/useMoveBack';
 import { HiArrowLeft } from 'react-icons/hi2';
+import { useParams } from 'react-router-dom';
 
 // import { useCheckout } from 'features/check-in-out/useCheckout';
 // import ButtonText from '../../ui/ButtonText';
@@ -27,18 +28,18 @@ const HeadingGroup = styled.div`
 `;
 
 function CoinWithdrawDetil() {
-
+  const { name, coinId } = useParams();
   const moveBack = useMoveBack();
 
   return (
     <>
       <Row type='horizontal'>
         <HeadingGroup>
-          <Heading type='h1'>Withderaw Whit USDT</Heading>
+          <Heading type='h1'>Withderaw Whit {name}</Heading>
         </HeadingGroup>
       </Row>
 
-      <CoinWithdrawBox />
+      <CoinWithdrawBox coinName={name} coinId={coinId} />
 
       <ButtonGroup>
         <Button variation='secondary' onClick={moveBack}>

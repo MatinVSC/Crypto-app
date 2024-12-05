@@ -2,80 +2,84 @@ import styled from 'styled-components';
 import Table from '../../ui/Table';
 import React from 'react';
 import Tag from '../../ui/Tag';
+// import SpinnerMini from '../../ui/SpinnerMini';
+// import Spinner from '../../ui/Spinner';
+import { format } from 'date-fns';
 
 
 const Cabin = styled.div`
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 800;
-  color: var(--color-grey-600);
-  font-family: 'Sono';
-  margin-left: 1rem;
+  color: #2c3e50;
+  font-family: 'Sono', sans-serif;
+  margin-left: 1.2rem;
+  letter-spacing: 0.03em;
+  &:hover {
+    color: #3498db;
+    transition: color 0.3s ease;
+  }
 `;
 
 const Stacked = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.3rem;
 
   & span:first-child {
-    font-weight: 500;
+    font-weight: 600;
+    color: #34495e;
   }
 
   & span:last-child {
-    color: var(--color-grey-500);
-    font-size: 1.2rem;
+    color: #95a5a6;
+    font-size: 1.3rem;
   }
 `;
 
 const Amount = styled.div`
-  font-family: 'Sono';
-  font-weight: 500;
-  font-size: 2rem;
-  color: green;
+  font-family: 'Sono', sans-serif;
+  font-weight: 600;
+  font-size: 2.2rem;
+  color: #27ae60;
+  letter-spacing: 0.02em;
+  &:hover {
+    color: #2ecc71;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+  }
 `;
 
 const TransactionRow = React.memo(({ transactionData, coins }) => {
-  const [{ name }] = coins
-  const {
-    id: coinId,
-    value,
-    status,
-    timestamp
-  } = transactionData;
+  const coinsMap = React.useMemo(
+    () => new Map(coins?.map((coin) => [coin.id, coin.name])),
+    [coins]
+  );
 
-  const dateTransaction = timestamp / 1000000;
-  const timeTransactions = new Date(dateTransaction).toLocaleDateString();
+  const { value, status, timestamp, coin } = transactionData;
+  const dateTransaction = format(new Date(timestamp / 1000000),  "yyyy-MM-dd")
 
   const statusToTagName = {
-    "Pending": "blue",
-    "Success": "green",
-    "Failed": "red",
+    Pending: "blue",
+    Success: "green",
+    Failed: "red",
   };
 
-  const statusName = status === -1
-    ? "Failed"
-    : status === 1
-      ? "Success"
-      : "Pending";
+  const statusName = status === -1 ? "Failed" : status === 1 ? "Success" : "Pending";
 
   return (
-    <Table.Row role='row'>
-      <Cabin>{name}</Cabin>
-
+    <Table.Row role="row">
+      <Cabin>{coinsMap.get(coin) || "Unknown Coin"}</Cabin>
       <Stacked>
         <Amount>${value}</Amount>
       </Stacked>
-
       <Stacked>
-        <Cabin>{timeTransactions}</Cabin>
+        <Cabin>{dateTransaction}</Cabin>
       </Stacked>
-
       <Stacked>
         <Tag type={statusToTagName[statusName]}>{statusName}</Tag>
       </Stacked>
-
     </Table.Row>
   );
-})
+});
 
 export default TransactionRow;

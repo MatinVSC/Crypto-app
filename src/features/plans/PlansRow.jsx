@@ -4,85 +4,91 @@ import Modal from '../../ui/Modal';
 import ActivationPlan from './ActivationPlan';
 
 
-// const Cabin = styled.div`
-//   font-size: 1.6rem;
-//   font-weight: 600;
-//   color: var(--color-grey-600);
-//   font-family: "Sono";
-// `;
-
-// const Price = styled.div`
-//   font-family: "Sono";
-//   font-weight: 600;
-// `;
-
-// const Discount = styled.div`
-//   font-family: "Sono";
-//   font-weight: 500;
-//   color: var(--color-green-700);
-// `;
-
 const Card = styled.div`
-  background-color: ${(props) => (props.special ? "#f0f8ff" : "#fff")};
-  border: ${(props) => (props.special ? "1px solid #007bff" : "1px solid #e0e0e0")};
-  border-radius: 8px;
+  background-color: ${(props) => (props.special ? "#f0faff" : "#ffffff")};
+  border: ${(props) => (props.special ? "2px solid #007bff" : "1px solid #e0e0e0")};
+  border-radius: 16px;
   box-shadow: ${(props) =>
-    props.special ? "0 6px 10px rgba(0, 123, 255, 0.2)" : "0 4px 6px rgba(0, 0, 0, 0.1)"};
-  padding: 5rem 4rem;
+    props.special
+      ? "0 6px 12px rgba(0, 123, 255, 0.2)"
+      : "0 4px 8px rgba(0, 0, 0, 0.1)"};
+  padding: 5rem 0;
   width: 80%;
   text-align: center;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);
+    box-shadow: ${(props) =>
+      props.special
+        ? "0 8px 16px rgba(0, 123, 255, 0.3)"
+        : "0 6px 12px rgba(0, 0, 0, 0.15)"};
   }
 `;
 
-// عنوان
 const Title = styled.h2`
-  font-size: 24px;
+  font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 10px;
-  color: ${(props) => (props.special ? "#007bff" : "#333")};
+  margin-bottom: 1.5rem;
+  color: ${(props) => (props.special ? "#007bff" : "#2c3e50")};
+  letter-spacing: 0.05em;
 `;
 
-// قیمت
 const Price = styled.div`
-  font-size: 18px;
+  font-size: 1.8rem;
   font-weight: bold;
-  margin: 15px 0;
-  color: ${(props) => (props.special ? "#007bff" : "#555")};
+  margin: 1rem 0 2rem;
+  color: ${(props) => (props.special ? "#007bff" : "#34495e")};
 `;
 
-// ویژگی‌ها
 const Features = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 20px 0;
-  color: #666;
-`;
+  margin: 2rem 0;
+  text-align: center;
+  color: #666666;
 
-const Feature = styled.li`
-  margin: 10px 0;
-  font-size: 1.6rem;
-`;
-
-// دکمه
-const Button = styled.button`
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #0056b3;
+  li:not(:last-child) {
+    margin-bottom: 1.2rem; /* فاصله بین ویژگی‌ها */
   }
 `;
 
+const Feature = styled.li`
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: "✔";
+    color: ${(props) => (props.special ? "#007bff" : "#2ecc71")};
+    font-weight: bold;
+    margin-right: 1rem;
+  }
+`;
+
+const Button = styled.button`
+  background: ${(props) =>
+    props.special
+      ? "linear-gradient(90deg, #007bff, #00d4ff)"
+      : "#007bff"};
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: ${(props) =>
+      props.special
+        ? "linear-gradient(90deg, #0056b3, #008fb3)"
+        : "#0056b3"};
+    transform: scale(1.05);
+  }
+`;
 
 
 function PlansRow({ plans }) {
@@ -95,10 +101,11 @@ function PlansRow({ plans }) {
     cancelable,
     percentage,
   } = plans;
+  
 
   const processedData = {
-    special: name?.startsWith('sp'),
-    title: name?.startsWith('sp') ? "Premium Plan Staking" : "Basic Plan Staking",
+    special: name?.startsWith('*'),
+    title: name,
     price: `minimum invest : $${min}`,
     interest: `${percentage}% interest in ${term} days`,
     time: `Staking duration : ${time} days`,
