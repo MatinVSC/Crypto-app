@@ -1,7 +1,6 @@
 import toast from "react-hot-toast";
 import { BASE_URL } from "../utils/baseUrl";
-
-const userSession = localStorage.getItem('userSession');
+import { userSession } from "../utils/useSession";
 
 // get activation plans
 export async function getActivationPlan({ value, planId: plan }) {

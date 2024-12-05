@@ -7,9 +7,13 @@ export function useWithdrawCoin() {
 
     const { mutate: withdrawCoin, isLoading, error } = useMutation({
         mutationFn: ({ value, coinId, walletAddress }) => getWithdrawCoin({ value, coinId, walletAddress }),
-        onSuccess: (data) => {            
-            queryClient.setQueryData(["walletWithdraw"], data.data);
-            toast.success("Your withdrawal was successful")
+        onSuccess: (data) => {
+            if (data.data) {
+                queryClient.setQueryData(["walletWithdraw"], data.data);
+                toast.success("Your withdrawal was successful")
+            } else {
+                toast.error("Your wallet balance is insufficient !")
+            }
         },
         onError: err => {
             console.log(err);

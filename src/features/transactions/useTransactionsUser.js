@@ -1,10 +1,10 @@
 import { useQuery } from "react-query";
-import { getTransactionUser } from "../../services/apiTransactions";
+import { getDepositTransactions } from "../../services/apiTransactions";
 
 
-export function useTransactionsUser() {
+export function useDepositTransactions() {
 
-    const { data: transactionUser, isLoading, error } = useQuery(["transactions"], getTransactionUser,
+    const { data: depositTransactions, isLoading, error } = useQuery(["depositTransaction"], getDepositTransactions,
         {
             staleTime: 1000 * 40 * 10,
             cacheTime: 1000 * 60 * 20,
@@ -13,5 +13,5 @@ export function useTransactionsUser() {
         }
     );
 
-    return { transactionUser, isLoading, error }
+    return { depositTransactions, isLoading, error }
 }

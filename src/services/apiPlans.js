@@ -1,10 +1,9 @@
 import toast from "react-hot-toast";
 import { BASE_URL } from "../utils/baseUrl";
-
+import { userSession } from "../utils/useSession";
 
 // get plans data
 export async function getPlans() {
-    const userSession = localStorage.getItem('userSession');
 
     try {
         const response = await fetch(`${BASE_URL}/plans`, {

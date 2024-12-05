@@ -3,7 +3,12 @@ import { getUserData } from "../../services/apiUser";
 
 export function useUserData() {
 
-    const { data: userData, isLoading, error } = useQuery(["user"], getUserData);
-
+    const { data: userData, isLoading, error } = useQuery(["user"], getUserData,
+        {
+            staleTime: 1000 * 40 * 10,
+            cacheTime: 1000 * 60 * 20,
+        }
+    );
+    
     return { userData, isLoading, error }
-}
+};

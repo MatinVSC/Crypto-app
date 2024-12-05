@@ -6,12 +6,14 @@ export function useActivationPlan() {
     const queryClient = useQueryClient();
 
     const { mutate: activationPlan, isLoading, error } = useMutation({
-        mutationFn: ({ value, planId}) => getActivationPlan({ value, planId }),
+        mutationFn: ({ value, planId }) => getActivationPlan({ value, planId }),
         onSuccess: (data) => {
-            console.log(data);
-             
-            queryClient.setQueryData(["activationPlan"], data);
-            toast.success("Your plan has been successfully activated")
+            if (data.data) {
+                queryClient.setQueryData(["activationPlan"], data);
+                toast.success("Your plan has been successfully activated")
+            } else {
+                toast.error("Your wallet balance is insufficient !")
+            }
         },
         onError: err => {
             console.log(err);
