@@ -5,7 +5,7 @@ const StyledFormRow = styled.div`
   align-items: center;
 
   grid-template-columns: ${(props) =>
-    props.orientation === "vertical" ? "1fr" : "26rem 1fr 2fr"};
+    props.orientation === "vertical" ? "1fr" : "10rem 1fr 1fr"};
   gap: ${(props) => (props.orientation === "vertical" ? "0.8rem" : "2.4rem")};
 
   padding: 1.2rem 0;
@@ -33,15 +33,33 @@ const StyledFormRow = styled.div`
         display: flex;
         justify-content: flex-end;
     `}
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 0.8rem 0;
+
+    &:not(:last-child) {
+      border-bottom: none;
+    }
+  }
 `;
 
 const Label = styled.label`
   font-weight: 500;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const Error = styled.span`
   font-size: 1.4rem;
   color: var(--color-red-700);
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
 
 function FormRow({ label, error, children, orientation }) {

@@ -14,6 +14,11 @@ const StyledModal = styled.div`
   box-shadow: var(--shadow-lg);
   padding: 3.2rem 4rem;
   transition: all 0.5s;
+
+  @media (max-width: 768px) {
+    width: 90%;
+    padding: 2rem;
+  }
 `;
 
 const Overlay = styled.div`
@@ -46,13 +51,14 @@ const Button = styled.button`
   & svg {
     width: 2.4rem;
     height: 2.4rem;
-    /* Sometimes we need both */
-    /* fill: var(--color-grey-500);
-    stroke: var(--color-grey-500); */
     color: var(--color-grey-500);
+
+    @media (max-width: 768px) {
+      width: 2rem;
+      height: 2rem;
+    }
   }
 `;
-
 
 const ModalContext = createContext();
 
@@ -62,18 +68,19 @@ export default function Modal({ children }) {
   const close = () => setOpenName("");
   const open = setOpenName;
 
-  return <ModalContext.Provider value={{ openName, close, open }}>
-    {children}
-  </ModalContext.Provider>
-
+  return (
+    <ModalContext.Provider value={{ openName, close, open }}>
+      {children}
+    </ModalContext.Provider>
+  );
 }
 
 function Open({ children, opens: opensWindowName }) {
-  const { open } = useContext(ModalContext)
+  const { open } = useContext(ModalContext);
   return cloneElement(children, { onClick: () => open(opensWindowName) });
 }
 
-function Window({ children, name, }) {
+function Window({ children, name }) {
   const { openName, close } = useContext(ModalContext);
   const ref = useOutsideClick(close);
 
@@ -91,7 +98,7 @@ function Window({ children, name, }) {
       </StyledModal>
     </Overlay>,
     document.body
-  )
+  );
 }
 
 Modal.Open = Open;

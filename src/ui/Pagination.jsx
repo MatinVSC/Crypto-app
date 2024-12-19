@@ -1,13 +1,18 @@
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
-// import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { PAGE_SIZE } from '../utils/constants';
+import { useTranslation } from "react-i18next";
 
 const StyledPagination = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: 768px) {
+    gap: 1rem;
+    align-items: center;
+  }
 `;
 
 const P = styled.p`
@@ -17,11 +22,21 @@ const P = styled.p`
   & span {
     font-weight: 600;
   }
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    margin-left: 0;
+    text-align: center;
+  }
 `;
 
 const Buttons = styled.div`
   display: flex;
   gap: 0.6rem;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
 `;
 
 const PaginationButton = styled.button`
@@ -51,6 +66,11 @@ const PaginationButton = styled.button`
   & svg {
     height: 1.8rem;
     width: 1.8rem;
+
+    @media (max-width: 768px) {
+      height: 1.2rem;
+      width: 1.2rem;
+    }
   }
 
   &:hover:not(:disabled) {
@@ -60,6 +80,7 @@ const PaginationButton = styled.button`
 `;
 
 export default function Pagination({ count, currentPage, setCurrentPage }) {
+  const { t } = useTranslation();
   const pageCount = Math.ceil(count / PAGE_SIZE);
 
   const nextPage = () => {
@@ -78,25 +99,25 @@ export default function Pagination({ count, currentPage, setCurrentPage }) {
 
   return (
     <StyledPagination>
-      <p>
-        showing <span>{(currentPage - 1) * PAGE_SIZE + 1}</span> to <span>{currentPage === pageCount ? count : currentPage * PAGE_SIZE}</span> of <span>{count}</span> results
-      </p>
+      <P>
+        {t('filter.showing', 'showing')} <span>{(currentPage - 1) * PAGE_SIZE + 1}</span> {t('filter.to', 'to')} <span>{currentPage === pageCount ? count : currentPage * PAGE_SIZE}</span> {t('filter.of', 'of')} <span>{count}</span> {t('filter.results', 'showing')}
+      </P>
 
       <Buttons>
         <PaginationButton
           onClick={prevPage}
           disabled={currentPage === 1}
         >
-          <HiChevronLeft /> <span>Previous</span>
+          <HiChevronLeft /> <span>{t('filter.prev', 'Previous')}</span>
         </PaginationButton>
         <PaginationButton
           disabled={currentPage === pageCount}
           onClick={nextPage}
         >
-          <span>Next</span>
+          <span>{t('filter.next', 'Next')}</span>
           <HiChevronRight />
         </PaginationButton>
       </Buttons>
     </StyledPagination>
-  )
+  );
 }

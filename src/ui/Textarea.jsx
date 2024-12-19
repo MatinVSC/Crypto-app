@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Button from "./Button";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const StyledTextarea = styled.textarea`
   padding: 0.8rem 1.2rem;
@@ -11,6 +12,11 @@ const StyledTextarea = styled.textarea`
   box-shadow: var(--shadow-sm);
   width: 100%;
   height: 7rem;
+
+  @media (max-width: 768px) {
+    padding: 0.6rem 0.8rem;
+    font-size: 1.4rem;
+  }
 `;
 
 const Container = styled.div`
@@ -18,17 +24,22 @@ const Container = styled.div`
   flex-direction: column;
   gap: 1rem;
   width: 80%;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    gap: 0.8rem;
+  }
 `;
 
-
 export default function TextArea({ walletAdress, coinName }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handelCopyAddress = async () => {
     try {
       if (navigator.clipboard) {
-        await navigator.clipboard.writeText(walletAdress)
-        toast.success("Copied to clipboard.")
+        await navigator.clipboard.writeText(walletAdress);
+        toast.success(t('toast.copy', "Link copied to clipboard !"));
       } else {
         const textArea = document.createElement('textarea');
         textArea.value = walletAdress;
@@ -39,28 +50,27 @@ export default function TextArea({ walletAdress, coinName }) {
         toast.success("Copied to clipboard.");
       }
     } catch (error) {
-      toast.error("Failed to copy address");
+      toast.error(t('toast.copy', "Link copied to clipboard !"));
       console.error(error);
     }
-  }
+  };
 
   return (
     walletAdress ? (
       <Container>
-        <h3>Wallet Address {coinName}</h3>
+        <h3>{t('coins.depositWallet', { coinName, defaultValue: `Deposit wallet Address ${coinName}` })}</h3>
         <StyledTextarea value={walletAdress} readOnly />
         <Button onClick={handelCopyAddress}>
-          Copy Wallet Address
+          {t('coins.copy', 'Copy wallet address')}
         </Button>
-        <Button
-         onClick={() => navigate('/gett')}>
-          see Transactions
+        <Button onClick={() => navigate('/gett')}>
+          {t('coins.see', 'See Transactions')}
         </Button>
       </Container>
     ) : (
       <div>
-        <p>Please set your deposit value</p>
+        <p>{t('coins.depositText', 'Please set your deposit value !')}</p>
       </div>
     )
-  )
+  );
 }

@@ -6,12 +6,18 @@ import { TbBrandProducthunt } from "react-icons/tb";
 import { AiOutlineTransaction } from "react-icons/ai";
 import { BiSupport } from "react-icons/bi";
 import { PiUsersThreeFill } from "react-icons/pi";
-
+import { useTranslation } from "react-i18next";
 
 const NavList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 `;
 
 const StyledNavLink = styled(NavLink)`
@@ -20,15 +26,14 @@ const StyledNavLink = styled(NavLink)`
     display: flex;
     align-items: center;
     gap: 1.2rem;
-
     color: var(--color-grey-600);
     font-size: 1.6rem;
     font-weight: 500;
     padding: 1.2rem 2.4rem;
     transition: all 0.3s;
+    white-space: nowrap;
   }
 
-  /* This works because react-router places the active class on the active NavLink */
   &:hover,
   &:active,
   &.active:link,
@@ -53,44 +58,46 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-function MainNav() {
+function MainNav({ toggleSidebar }) {
+  const { t } = useTranslation();
+
   return (
     <nav>
       <NavList>
         <li>
-          <StyledNavLink to="/dashboard">
+          <StyledNavLink to="/dashboard" onClick={toggleSidebar}>
             <HiOutlineHome />
-            <span>Dashbord</span>
+            <span>{t('sidebar.dashboard', 'Dashboard')}</span>
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/coins">
+          <StyledNavLink to="/coins" onClick={toggleSidebar}>
             <SiBitcoinsv />
-            <span>Wallet</span>
+            <span>{t('sidebar.wallet', 'Wallet')}</span>
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/plans">
+          <StyledNavLink to="/plans" onClick={toggleSidebar}>
             <TbBrandProducthunt />
-            <span>Plans</span>
+            <span>{t('sidebar.plans', 'Plans')}</span>
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/gett">
+          <StyledNavLink to="/gett" onClick={toggleSidebar}>
             <AiOutlineTransaction />
-            <span>Transactions</span>
+            <span>{t('sidebar.transactions', 'Transactions')}</span>
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/getTickets">
+          <StyledNavLink to="/getTickets" onClick={toggleSidebar}>
             <BiSupport />
-            <span>Tickets</span>
+            <span>{t('sidebar.tickets', 'Tickets')}</span>
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/partnership">
+          <StyledNavLink to="/partnership" onClick={toggleSidebar}>
             <PiUsersThreeFill />
-            <span>Partnership</span>
+            <span>{t('sidebar.partnership', 'Partnership')}</span>
           </StyledNavLink>
         </li>
       </NavList>

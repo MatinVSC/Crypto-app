@@ -7,16 +7,31 @@ const sizes = {
     text-transform: uppercase;
     font-weight: 600;
     text-align: center;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      padding: 0.2rem 0.1rem;
+    }
   `,
   medium: css`
     font-size: 1.4rem;
     padding: 1.2rem 1.6rem;
     font-weight: 500;
+
+    @media (max-width: 768px) {
+      font-size: 1.2rem;
+      padding: 1rem 1rem;
+    }
   `,
   large: css`
     font-size: 1.6rem;
     padding: 1.2rem 2.4rem;
     font-weight: 500;
+
+    @media (max-width: 768px) {
+      font-size: 1.4rem;
+      padding: 1rem 2rem;
+    }
   `,
 };
 
@@ -31,8 +46,8 @@ const variations = {
   `,
   secondary: css`
     color: var(--color-grey-600);
-    background: var(--color-grey-0);
-    border: 1px solid var(--color-grey-200);
+    background: var(--color-grey-100 );
+    border: 1px solid var(--color-grey-400);
 
     &:hover {
       background-color: var(--color-grey-50);

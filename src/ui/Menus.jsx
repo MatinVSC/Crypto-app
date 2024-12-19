@@ -9,6 +9,13 @@ const Menu = styled.div`
   gap: 2rem;
   align-items: center;
   justify-content: flex-end;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
 `;
 
 const StyledToggle = styled.button`
@@ -27,6 +34,11 @@ const StyledToggle = styled.button`
     width: 2.4rem;
     height: 2.4rem;
     color: var(--color-grey-700);
+
+    @media (max-width: 768px) {
+      width: 2rem;
+      height: 2rem;
+    }
   }
 `;
 
@@ -39,6 +51,11 @@ const StyledList = styled.ul`
 
   right: ${(props) => props.position.x}px;
   top: ${(props) => props.position.y}px;
+
+  @media (max-width: 768px) {
+    width: 90%;
+    right: 5%;
+  }
 `;
 
 const StyledButton = styled.button`
@@ -61,22 +78,29 @@ const StyledButton = styled.button`
     height: 1.6rem;
     color: var(--color-grey-400);
     transition: all 0.3s;
-  }
 
+  }
+  
   ${(props) =>
     props.color === "green" &&
     css`
       background-color: green;
-   `
-  }
-
-  ${(props) =>
+      `}
+      
+      ${(props) =>
     props.color === "red" &&
     css`
       background-color: red;
-   `
-  }
+      `}
 
+      @media (max-width: 768px) {
+        width: 2rem;
+        height: 2rem;
+        padding: 1rem 2.5rem;
+        font-size: 1rem;
+        gap: 0;
+        margin-right: 2rem;
+      }
 `;
 
 const MenusContext = createContext();
@@ -94,7 +118,7 @@ function Menus({ children }) {
     >
       {children}
     </MenusContext.Provider>
-  )
+  );
 }
 
 function Toggle({ id }) {
@@ -103,20 +127,20 @@ function Toggle({ id }) {
   function handelClickToggle(e) {
     e.stopPropagation();
 
-    const rect = e.target.closest('button').getBoundingClientRect();
+    const rect = e.target.closest("button").getBoundingClientRect();
     setPosition({
       x: window.innerWidth - rect.width - rect.x,
       y: rect.y + rect.height + 8,
     });
 
-    openId === '' || openId !== id ? open(id) : close();
+    openId === "" || openId !== id ? open(id) : close();
   }
 
   return (
     <StyledToggle onClick={handelClickToggle}>
       <HiEllipsisVertical />
     </StyledToggle>
-  )
+  );
 }
 
 function List({ id, children }) {
@@ -130,15 +154,15 @@ function List({ id, children }) {
       {children}
     </StyledList>,
     document.body
-  )
+  );
 }
 
 function Button({ children, icon, onClick, color }) {
   const { close } = useContext(MenusContext);
 
   function handelClickButton() {
-    onClick?.()
-    close()
+    onClick?.();
+    close();
   }
 
   return (
@@ -146,7 +170,7 @@ function Button({ children, icon, onClick, color }) {
       {icon}
       <span>{children}</span>
     </StyledButton>
-  )
+  );
 }
 
 Menus.Menu = Menu;

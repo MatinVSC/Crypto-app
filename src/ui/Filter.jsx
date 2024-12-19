@@ -33,14 +33,17 @@ const FilterButton = styled.button`
     background-color: var(--color-brand-600);
     color: var(--color-brand-50);
   }
-`;
 
+  @media (max-width: 768px) {
+    padding: .2rem;
+  }
+`;
 
 export default function Filter({ filterField, options }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentFilter = searchParams.get(filterField) || options.at(0).value;
 
-  function handelClick(value) {
+  function handleClick(value) {
     searchParams.set(filterField, value);
     setSearchParams(searchParams);
   }  
@@ -50,7 +53,7 @@ export default function Filter({ filterField, options }) {
       {options.map(option => (
         <FilterButton
           key={option.value}
-          onClick={() => handelClick(option.value)}
+          onClick={() => handleClick(option.value)}
           disabled={option.value === currentFilter}
           active={option.value === currentFilter}
         >
