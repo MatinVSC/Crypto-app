@@ -1,37 +1,35 @@
 import toast from "react-hot-toast";
-import { BASE_URL } from "../utils/baseUrl";
 import { getUserSession } from "../utils/useSession";
+import { BASE_URL } from "../utils/baseUrl";
 
-// get activation plans
-export async function getActivationPlan({ value, planId: plan }) {
+
+export async function getFirstPartners() {
     const userSession = getUserSession();
     try {
-        const response = await fetch(`${BASE_URL}/newi`, {
+        const response = await fetch(`${BASE_URL}/firstPartners`, {
             method: 'POST',
             headers: {
                 "Content-type": "application/json",
                 "key": userSession
             },
-            body: JSON.stringify({ value, plan })
         });
 
         if (!response.ok) {
             toast.error("Error processing the request. Please try again later.")
         }
 
-        const plansData = await response.json();
-        return plansData;
+        const coinsData = await response.json();
+        return coinsData;
 
     } catch (error) {
         throw new Error(error.message);
     }
 };
 
-// get user activited plans 
-export async function getActivitedPlans() {
+export async function getSecondPartners() {
     const userSession = getUserSession();
     try {
-        const response = await fetch(`${BASE_URL}/geti`, {
+        const response = await fetch(`${BASE_URL}/secondPartners`, {
             method: 'POST',
             headers: {
                 "Content-type": "application/json",
@@ -43,10 +41,10 @@ export async function getActivitedPlans() {
             toast.error("Error processing the request. Please try again later.")
         }
 
-        const userActivitedPlans = await response.json();
-        return userActivitedPlans;
+        const coinsData = await response.json();
+        return coinsData;
 
     } catch (error) {
         throw new Error(error.message);
     }
-}
+};

@@ -2,11 +2,10 @@ import toast from "react-hot-toast";
 import { BASE_URL } from "../utils/baseUrl";
 import { getUserSession } from "../utils/useSession";
 
-// get plans data
-export async function getPlans() {
+export async function getNotifications() {
     const userSession = getUserSession();
     try {
-        const response = await fetch(`${BASE_URL}/plans`, {
+        const response = await fetch(`${BASE_URL}/getn`, {
             method: 'POST',
             headers: {
                 "Content-type": "application/json",
@@ -18,10 +17,10 @@ export async function getPlans() {
             toast.error("Error processing the request. Please try again later.")
         }
 
-        const plansData = await response.json();
-        return plansData;
+        const userNotifications = await response.json();
+        return userNotifications?.data;
 
     } catch (error) {
         throw new Error(error.message);
     }
-}
+};

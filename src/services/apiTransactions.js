@@ -1,10 +1,11 @@
 import toast from "react-hot-toast";
 import { BASE_URL } from "../utils/baseUrl";
-import { userSession } from "../utils/useSession";
+import { getUserSession } from "../utils/useSession";
+// import { userSession } from "../utils/useSession";
 
 // get deposit transaction
 export async function getDepositTransactions() {
-
+    const userSession = getUserSession();
     try {
         const response = await fetch(`${BASE_URL}/gett`, {
             method: 'POST',
@@ -28,6 +29,7 @@ export async function getDepositTransactions() {
 
 // get whithraw transactions
 export async function getWithdrawTransactions() {
+    const userSession = getUserSession();
 
     try {
         const response = await fetch(`${BASE_URL}/getw`, {

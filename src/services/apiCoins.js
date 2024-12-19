@@ -1,10 +1,10 @@
 import toast from "react-hot-toast";
 import { BASE_URL } from "../utils/baseUrl";
-import { userSession } from "../utils/useSession";
+import { getUserSession } from "../utils/useSession";
 
 // get Coins data
 export async function getCoins() {
-
+    const userSession = getUserSession();
     try {
         const response = await fetch(`${BASE_URL}/coins`, {
             method: 'POST',
@@ -29,7 +29,7 @@ export async function getCoins() {
 // get deposit coin
 
 export async function getDepositCoin({ value, coinId: coin }) {
-
+    const userSession = getUserSession();
     try {
         const response = await fetch(`${BASE_URL}/newt`, {
             method: "POST",
@@ -55,8 +55,7 @@ export async function getDepositCoin({ value, coinId: coin }) {
 // get withderaw coin
 
 export async function getWithdrawCoin({ value, coinId: coin, walletAddress }) {
-    console.log({value, walletAddress, coin});
-    
+    const userSession = getUserSession();
 
     try {
         const response = await fetch(`${BASE_URL}/neww`, {
