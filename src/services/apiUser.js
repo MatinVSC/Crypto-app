@@ -1,9 +1,11 @@
 import toast from "react-hot-toast";
 import { BASE_URL } from "../utils/baseUrl";
-import { userSession } from "../utils/useSession";
+import { getUserSession } from "../utils/useSession";
+
 
 // get user data
 export async function getUserData() {
+  const userSession = getUserSession();
 
     try {
         const response = await fetch(`${BASE_URL}/user`, {
@@ -26,44 +28,9 @@ export async function getUserData() {
     }
 };
 
-// get update email or password user
-// export async function getUpdateUser({ email = "", currentPassword, newPassword = "" }) {
-
-//     if (!currentPassword) {
-//         console.error(currentPassword, "Current Password is required.");
-//     }
-    
-
-//     try {
-//         const response = await fetch(`${BASE_URL}/updatei`, {
-//             method: 'POST',
-//             headers: {
-//                 "Content-type": "application/json",
-//                 "key": userSession
-//             },
-//             body: JSON.stringify({
-//                 email: String(email),
-//                 currentPassword: String(currentPassword),
-//                 newPassword: String(newPassword),
-//               }),
-//         });
-
-//         if (!response.ok) {
-//             toast.error("Error processing the request. Please try again later.")
-//         }
-
-//         const updateUser = await response.json();
-//         return updateUser;
-
-//     } catch (error) {
-//         throw new Error(error.message);
-//     }
-// };
-
-
 
 export async function getUpdateUser({ email = "", currentPassword: password, newPassword = "" }) {
-    console.log("Request Data:", { email, password, newPassword });
+  const userSession = getUserSession();
   
     try {
       const response = await fetch(`${BASE_URL}/updatei`, {

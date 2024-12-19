@@ -1,1 +1,2 @@
-export const userSession = localStorage.getItem('userSession');
+// session.js
+export const getUserSession = () => localStorage.getItem('userSession');

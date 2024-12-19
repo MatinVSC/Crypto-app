@@ -2,14 +2,15 @@ import toast from 'react-hot-toast';
 import { BASE_URL } from '../utils/baseUrl';
 
 // user Register
-export async function Register({ email, password }) {
+export async function Register({ email, password, referral = "" }) {
+    
     try {
         const response = await fetch(`${BASE_URL}/register`, {
             method: 'POST',
             headers: {
                 "content-type": "application/json"
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password, referral })
         });
 
         if (!response.ok) {
