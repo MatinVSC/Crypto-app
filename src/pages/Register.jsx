@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { HiArrowLeftEndOnRectangle } from "react-icons/hi2";
-
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import RegisterForm from "../features/authentication/RegisterForm";
 import Logo from '../ui/Logo';
@@ -19,7 +19,6 @@ const StyledNavLink = styled(NavLink)`
     transition: all 0.3s;
   }
 
-  /* This works because react-router places the active class on the active NavLink */
   &:hover,
   &:active,
   &.active:link,
@@ -42,6 +41,11 @@ const StyledNavLink = styled(NavLink)`
   &.active:visited svg {
     color: var(--color-brand-600);
   }
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+    gap: 1rem;
+  }
 `;
 
 const RegisterLayout = styled.main`
@@ -52,6 +56,11 @@ const RegisterLayout = styled.main`
   justify-content: center;
   gap: 1.8rem;
   background-color: var(--color-grey-50);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 90%;
+    gap: 1.2rem;
+  }
 `;
 
 const NavList = styled.ul`
@@ -60,26 +69,35 @@ const NavList = styled.ul`
   justify-content: center;
   align-items: center;
   gap: 0.8rem;
+
+  @media (max-width: 768px) {
+    gap: 0.6rem;
+  }
 `;
 
 function Register() {
-    return <RegisterLayout>
-        <Logo />
-        <Heading as='h4'>
-            Register to your account
-        </Heading>
-        <RegisterForm />
-        <NavList>
-            <li>
-                <StyledNavLink to="/login">
-                    <HiArrowLeftEndOnRectangle />
-                    <span>Already have an account ?
-                        <span style={{ color: "blue" }}>  Log in now</span>
-                    </span>
-                </StyledNavLink>
-            </li>
-        </NavList>
-    </RegisterLayout>;
+  const { t } = useTranslation();
+
+  return (
+    <RegisterLayout>
+      <Logo />
+      <Heading as='h4'>
+        {t('signup.join', 'Join Now')}
+      </Heading>
+      <RegisterForm />
+      <NavList>
+        <li>
+          <StyledNavLink to="/login">
+            <span>
+              {t('signup.account', 'Already have an account ?')}
+              <span style={{ color: "blue" }}> {t('signup.login', 'Login Now')}</span>
+            </span>
+            <HiArrowLeftEndOnRectangle />
+          </StyledNavLink>
+        </li>
+      </NavList>
+    </RegisterLayout>
+  );
 }
 
 export default Register;

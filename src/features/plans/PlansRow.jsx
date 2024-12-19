@@ -1,8 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import Table from '../../ui/Table';
 import Modal from '../../ui/Modal';
 import ActivationPlan from './ActivationPlan';
-
 
 const Card = styled.div`
   background-color: ${(props) => (props.special ? "#f0faff" : "#ffffff")};
@@ -20,9 +20,14 @@ const Card = styled.div`
   &:hover {
     transform: translateY(-5px);
     box-shadow: ${(props) =>
-      props.special
-        ? "0 8px 16px rgba(0, 123, 255, 0.3)"
-        : "0 6px 12px rgba(0, 0, 0, 0.15)"};
+    props.special
+      ? "0 8px 16px rgba(0, 123, 255, 0.3)"
+      : "0 6px 12px rgba(0, 0, 0, 0.15)"};
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 3rem 1rem;
   }
 `;
 
@@ -32,6 +37,10 @@ const Title = styled.h2`
   margin-bottom: 1.5rem;
   color: ${(props) => (props.special ? "#007bff" : "#2c3e50")};
   letter-spacing: 0.05em;
+
+  @media (max-width: 768px) {
+    font-size: 1.6rem;
+  }
 `;
 
 const Price = styled.div`
@@ -39,6 +48,11 @@ const Price = styled.div`
   font-weight: bold;
   margin: 1rem 0 2rem;
   color: ${(props) => (props.special ? "#007bff" : "#34495e")};
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+    margin: 0.8rem 0 1.6rem;
+  }
 `;
 
 const Features = styled.ul`
@@ -49,7 +63,11 @@ const Features = styled.ul`
   color: #666666;
 
   li:not(:last-child) {
-    margin-bottom: 1.2rem; /* فاصله بین ویژگی‌ها */
+    margin-bottom: 1.2rem;
+  }
+
+  @media (max-width: 768px) {
+    margin: 1.6rem 0;
   }
 `;
 
@@ -64,6 +82,10 @@ const Feature = styled.li`
     color: ${(props) => (props.special ? "#007bff" : "#2ecc71")};
     font-weight: bold;
     margin-right: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
   }
 `;
 
@@ -83,13 +105,17 @@ const Button = styled.button`
 
   &:hover {
     background: ${(props) =>
-      props.special
-        ? "linear-gradient(90deg, #0056b3, #008fb3)"
-        : "#0056b3"};
+    props.special
+      ? "linear-gradient(90deg, #0056b3, #008fb3)"
+      : "#0056b3"};
     transform: scale(1.05);
   }
-`;
 
+  @media (max-width: 768px) {
+    padding: 0.8rem 1.6rem;
+    font-size: 1.2rem;
+  }
+`;
 
 function PlansRow({ plans }) {
   const {
@@ -101,39 +127,44 @@ function PlansRow({ plans }) {
     cancelable,
     percentage,
   } = plans;
-  
+
+  const { t } = useTranslation();
 
   const processedData = {
     special: name?.startsWith('*'),
     title: name,
     price: `minimum invest : $${min}`,
     interest: `${percentage}% interest in ${term} days`,
-    time: `Staking duration : ${time} days`,
-    cancelable: cancelable ? "Ability cancel : Yes" : "Ability cancel : No"
+    duration: `Investment duration : ${time} days`,
   }
 
+  const { price, interest, duration } = processedData;
 
   return (
-
     <Table.Plans type={"vertical"}>
-
       <Card special={processedData.special}>
         <Title special={processedData.special}>
           {processedData.title}
         </Title>
         <Price special={processedData.special}>
-          {processedData.price}
+          {t('plans.invest', { min }, `${price}`)}
         </Price>
         <Features>
-          <Feature>{processedData.interest}</Feature>
-          <Feature>{processedData.time}</Feature>
-          <Feature>{processedData.cancelable}</Feature>
+          <Feature>{t('plans.interest', { percentage, term }, `${interest}`)}</Feature>
+          <Feature>{t('plans.duration', { time }, `${duration}`)}</Feature>
+          <Feature>
+            {
+              cancelable
+                ? t("plans.cancelable.yes", "Ability cancel : Yes")
+                : t("planscancelable.no", "Ability cancel : No")
+            }
+          </Feature>
         </Features>
 
         <Modal>
           <Modal.Open opens='plan-form'>
-            <Button>
-              Choose Plan
+            <Button special={processedData.special}>
+              {t('plans.choose', 'Choose Plan')}
             </Button>
           </Modal.Open>
           <Modal.Window name='plan-form'>
@@ -142,23 +173,11 @@ function PlansRow({ plans }) {
               planName={processedData.title}
               isSpecial={processedData.special}
               percentage={percentage}
+              term={term}
             />
           </Modal.Window>
         </Modal>
-
       </Card>
-
-
-      {/* <Card special>
-      //   <Title special>Premium Plan</Title>
-      //   <Price special>$20/month</Price>
-      //   <Features>
-      //     <Feature>Unlimited Projects</Feature>
-      //     <Feature>50 GB Storage</Feature>
-      //     <Feature>Priority Support</Feature>
-      //   </Features>
-      //   <Button>Choose Plan</Button>
-      // </Card> */}
     </Table.Plans>
   );
 }

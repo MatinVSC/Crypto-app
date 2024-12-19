@@ -1,14 +1,19 @@
 import { useSearchParams } from 'react-router-dom';
-import TransactionOperations from '../features/transactions/TransactionOperations';
-import TransactionsTable from '../features/transactions/TransactionsTable';
 import { useDepositTransactions } from '../features/transactions/useTransactionsUser';
 import { useWithdrawTransactions } from '../features/transactions/useWithdrawTransactions';
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
+import { useMoveBack } from '../hooks/useMoveBack';
+import TransactionOperations from '../features/transactions/TransactionOperations';
+import TransactionsTable from '../features/transactions/TransactionsTable';
+import Button from '../ui/Button';
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
 import Spinner from '../ui/Spinner';
-import { useEffect } from 'react';
 
 function Transactions() {
+  const { t } = useTranslation();
+  const moveBack = useMoveBack();
   const [searchParams, setSearchParams] = useSearchParams();
   const { depositTransactions, isLoading } = useDepositTransactions();
   const { withdrawTransactions, isLoading: isLoadingW } = useWithdrawTransactions();
@@ -29,10 +34,10 @@ function Transactions() {
   return (
     <>
       <Row type="horizontal">
-        <Heading as="h1">Transactions</Heading>
-        <TransactionOperations
-        />
+        <Heading as="h2">{t('transaction.header', Transactions)}</Heading>
+        <Button variation="dsecondary" onClick={moveBack}>{t('back', 'Back')}</Button>
       </Row>
+      <TransactionOperations />
 
       <TransactionsTable
         depositTransaction={depositTransaction}

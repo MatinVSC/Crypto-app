@@ -1,16 +1,17 @@
+import styled, { keyframes } from "styled-components";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useTicketId } from "./useTicketId";
-import Spinner from "../../ui/Spinner";
 import { useQuery } from "react-query";
-import styled, { keyframes } from "styled-components";
-import Row from "../../ui/Row";
-import Heading from "../../ui/Heading";
-import Button from "../../ui/Button";
 import { useMoveBack } from "../../hooks/useMoveBack";
 import { useForm } from "react-hook-form";
 import { useReplayTicket } from "./useReplayTicket";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
+import Row from "../../ui/Row";
+import Heading from "../../ui/Heading";
+import Button from "../../ui/Button";
+import Spinner from "../../ui/Spinner";
 import SpinnerMini from "../../ui/SpinnerMini";
 
 const fadeIn = keyframes`
@@ -30,6 +31,10 @@ const TicketContainer = styled.div`
   border-radius: 10px;
   min-width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
 `;
 
 const TicketHeader = styled.div`
@@ -40,6 +45,11 @@ const TicketHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    font-size: 1.4rem;
+  }
 `;
 
 const TicketDetails = styled.div`
@@ -51,6 +61,11 @@ const TicketDetails = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    margin: 15px 0;
+    padding: 15px;
+  }
 `;
 
 const DetailItem = styled.div`
@@ -60,12 +75,21 @@ const DetailItem = styled.div`
   align-items: center;
   font-size: 1.4rem;
   margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
 `;
 
 const DetailLabel = styled.span`
   font-weight: bold;
   color: #2c3e50;
   margin-right: 1rem;
+
+  @media (max-width: 768px) {
+    margin-right: 0.5rem;
+  }
 `;
 
 const Detail = styled.p`
@@ -74,6 +98,10 @@ const Detail = styled.p`
   font-weight: 500;
   color: #34495e;
   line-height: 1.6;
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
 `;
 
 const MessageContainer = styled.div`
@@ -91,12 +119,18 @@ const MessageContainer = styled.div`
     props.role === "admin" ? "1px solid #1976d2" : "1px solid #388e3c"};
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   animation: ${fadeIn} 0.3s ease-out;
+  word-wrap: break-word;
+  word-break: break-word;
 
   & small {
     display: block;
     margin-top: 5px;
     color: #757575;
     font-size: 0.8rem;
+
+    @media (max-width: 768px) {
+      font-size: 0.7rem;
+    }
   }
 `;
 
@@ -113,15 +147,25 @@ const TextArea = styled.textarea`
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: 10px;
+  }
 `;
 
 const TicketReplay = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 2rem;
+
+  @media (max-width: 768px) {
+    margin-top: 1.5rem;
+  }
 `;
 
 const TicketDetail = () => {
+  const { t } = useTranslation();
   const { ticketId } = useParams();
   const { register, handleSubmit, reset } = useForm();
   const { userTicketId, isLoading } = useTicketId();
@@ -130,11 +174,13 @@ const TicketDetail = () => {
 
   useEffect(() => {
     userTicketId({ ticketId });
-  }, [ticketId]);
+  }, [ticketId, userTicketId]);
 
   const { data } = useQuery(["userTicketId"], {
     enabled: false,
   });
+
+  const ticketStatus = data?.open ? t('tickets.open', 'is open') : t('tickets.close', 'is close');
 
   if (isLoading) return <Spinner />;
 
@@ -143,30 +189,30 @@ const TicketDetail = () => {
     replayTicket({ ticketId, content }, {
       onSuccess: () => reset()
     });
-  };
+  }
 
   return (
     <>
       <Row type="horizontal">
-        <Heading>Ticket Detail</Heading>
+        <Heading>{t('tickets.detail', 'View Details')}</Heading>
         <Button variation="secondary" onClick={moveBack}>
-          Back
+          {t('back', 'Back')}
         </Button>
       </Row>
 
       <TicketContainer>
         <TicketHeader>
           <h2>{data?.subject || "Unknown Subject"}</h2>
-          <span>Status : {data?.open ? "is Open" : "is Closed"}</span>
+          <span>{t('tickets.status', 'Status :')} {ticketStatus}</span>
         </TicketHeader>
 
         <TicketDetails>
           <DetailItem>
-            <DetailLabel>Topic : </DetailLabel>
+            <DetailLabel>{t('tickets.topic', 'Topic :')}</DetailLabel>
             <Detail>{data?.topic || "N/A"}</Detail>
           </DetailItem>
           <DetailItem>
-            <DetailLabel>Timestamp : </DetailLabel>
+            <DetailLabel>{t('date', 'Date')}</DetailLabel>
             <Detail>
               {data?.timestamp
                 ? format(new Date(data?.timestamp / 1000000), "yyyy-MM-dd HH:mm")
@@ -174,7 +220,7 @@ const TicketDetail = () => {
             </Detail>
           </DetailItem>
           <DetailItem>
-            <DetailLabel>User ID : </DetailLabel>
+            <DetailLabel>{t('tickets.userId', 'User ID : ')}</DetailLabel>
             <Detail>{data?.user || "Unknown"}</Detail>
           </DetailItem>
         </TicketDetails>
@@ -183,7 +229,7 @@ const TicketDetail = () => {
           <MessageContainer key={index} role={msg.role}>
             <p>
               <strong>
-                {msg.role === "admin" ? "Support" : "You"}:
+                {msg.role === "admin" ? t('tickets.support', 'Support') : t('tickets.you', 'You')}:
               </strong>{" "}
               {msg.content}
             </p>
@@ -197,16 +243,16 @@ const TicketDetail = () => {
               <TextArea
                 rows="2"
                 disabled={isReplay}
-                placeholder="Replay"
+                placeholder={t('tickets.replay', 'Replay')}
                 {...register("content", {
-                  required: "This field is required",
+                  required: t('errors.require', 'This field is required'),
                   minLength: {
                     value: 5,
-                    message: 'Descriptions must contain at least 5 characters !'
+                    message: t('errors.description', 'Descriptions must contain at least 5 characters.')
                   }
                 })}
               />
-              <Button>{isReplay ? <SpinnerMini /> : "Send"}</Button>
+              <Button>{isReplay ? <SpinnerMini /> : t('tickets.send', 'Send')}</Button>
             </form>
           </Row>
         </TicketReplay>

@@ -1,6 +1,6 @@
 import { useLogin } from "../authentication/useLogin";
 import { useForm } from "react-hook-form";
-
+import { useTranslation } from "react-i18next";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import Input from "../../ui/Input";
@@ -8,6 +8,7 @@ import FormRowVertical from "../../ui/FormRowVertical";
 import SpinnerMini from '../../ui/SpinnerMini';
 
 function LoginForm() {
+  const { t } = useTranslation();
   const { register: loginForm, formState, handleSubmit, reset } = useForm();
   const { errors } = formState;
   const { login, isLoading } = useLogin();
@@ -22,7 +23,7 @@ function LoginForm() {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <FormRowVertical label="Email address" error={errors?.email?.message}>
+      <FormRowVertical label={t('login.email', 'Email Address')} error={errors?.email?.message}>
         <Input
           type="email"
           id="email"
@@ -41,7 +42,7 @@ function LoginForm() {
           disabled={isLoading}
         />
       </FormRowVertical>
-      <FormRowVertical label="Password" error={errors?.password?.message}>
+      <FormRowVertical label={t("login.password", "Password")} error={errors?.password?.message}>
         <Input
           type="password"
           id="password"
@@ -63,7 +64,7 @@ function LoginForm() {
           size="large"
           disabled={isLoading}
         >
-          {!isLoading ? 'Login' : <SpinnerMini />}
+          {!isLoading ? t("login.login", "Login") : <SpinnerMini />}
         </Button>
       </FormRowVertical>
     </Form>

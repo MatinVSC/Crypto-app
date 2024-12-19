@@ -1,33 +1,27 @@
-// import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-
-// import Spinner from 'ui/Spinner';
-import CoinWithdrawBox from './CoinWithdrawBox'
-import Row from '../../ui/Row';
-import Heading from '../../ui/Heading';
-// import Tag from '../../ui/Tag';
-import ButtonGroup from '../../ui/ButtonGroup';
-import Button from '../../ui/Button';
-// import Modal from '../../ui/Modal';
-// import ConfirmDelete from '../../ui/ConfirmDelete';
-
-// import { useBooking } from 'features/bookings/useBooking';
-// import { useDeleteBooking } from './useDeleteBooking';
 import { useMoveBack } from '../../hooks/useMoveBack';
 import { HiArrowLeft } from 'react-icons/hi2';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+import CoinWithdrawBox from './CoinWithdrawBox'
+import Row from '../../ui/Row';
+import Heading from '../../ui/Heading';
+import Button from '../../ui/Button';
 
-// import { useCheckout } from 'features/check-in-out/useCheckout';
-// import ButtonText from '../../ui/ButtonText';
-// import Empty from 'ui/Empty';
 
 const HeadingGroup = styled.div`
   display: flex;
   gap: 2.4rem;
   align-items: center;
+
+  @media (max-width: 768px) {
+    gap: 1.2rem;
+    flex-direction: column;
+  }
 `;
 
 function CoinWithdrawDetil() {
+  const { t } = useTranslation();
   const { name, coinId } = useParams();
   const moveBack = useMoveBack();
 
@@ -35,17 +29,18 @@ function CoinWithdrawDetil() {
     <>
       <Row type='horizontal'>
         <HeadingGroup>
-          <Heading type='h1'>Withderaw Whit {name}</Heading>
+          <Heading type='h2'>
+            {t('coins.withdrawWith', { name, defaultValue: `Withdraw With ${name}` })}
+          </Heading>
         </HeadingGroup>
+
+        <Button variation='secondary' onClick={moveBack}>
+          {<HiArrowLeft />} {t('back', 'Back')}
+        </Button>
       </Row>
 
       <CoinWithdrawBox coinName={name} coinId={coinId} />
 
-      <ButtonGroup>
-        <Button variation='secondary' onClick={moveBack}>
-          {<HiArrowLeft />} Back
-        </Button>
-      </ButtonGroup>
     </>
   );
 }

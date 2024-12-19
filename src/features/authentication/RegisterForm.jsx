@@ -1,86 +1,71 @@
 import { useRegister } from "../authentication/useRegister";
-
+import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import Input from "../../ui/Input";
 import FormRowVertical from "../../ui/FormRowVertical";
 import SpinnerMini from '../../ui/SpinnerMini';
-import toast from "react-hot-toast";
-import { useForm } from "react-hook-form";
+
 
 function RegisterForm() {
-    const { register, isLoading, error } = useRegister();
-    const { register: registerForm, formState, handleSubmit, reset } = useForm();
-    const { errors } = formState;
+    const { t } = useTranslation();
+    const { referralCode } = useParams();
+    const { register, isLoading } = useRegister();
+    const { register: registerForm, formState: { errors }, handleSubmit, reset } = useForm();
 
-    function onSubmit({ email, password }) {
-        console.log({ email, password });
-
-
-        if (!email || !password) return
-        register({ email, password }, {
+    function onSubmit({ email, password, referral }) {
+        if (!email || !password) return;
+        register({ email, password, referral }, {
             onSettled: () => reset()
         });
-    }
+    };
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)} type="regular">
-            <FormRowVertical label="Email address" error={errors?.email?.message}>
+            <FormRowVertical label={t('login.email', 'Email Address')} error={errors?.email?.message}>
                 <Input
                     type="email"
                     id="email"
-                    {...registerForm('email',
-                        {
-                            require: 'This field is required',
-                            pattern: {
-                                value: /\S+@\S+\.\S+/,
-                                message: 'Please provide a valid email address'
-                            }
+                    {...registerForm('email', {
+                        require: t('errors.require', 'This field is required'),
+                        pattern: {
+                            value: /\S+@\S+\.\S+/,
+                            message: t('errors.email', 'Please provide a valid email address')
                         }
-                    )}
-                    // This makes this form better for password managers
+                    })}
                     autoComplete="username"
-                    // onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
                 />
             </FormRowVertical>
-            <FormRowVertical label="Password (min 8 characters)"
-                error={errors?.password?.message}
-            >
+            <FormRowVertical label={t('signup.password', "Password (min 8 characters)")} error={errors?.password?.message}>
                 <Input
                     type="password"
                     id="password"
-                    {...registerForm('password',
-                        {
-                            require: 'This field is required',
-                            minLength: {
-                                value: 8,
-                                message: 'Password needs a minimum of 8 Characters'
-                            }
+                    {...registerForm('password', {
+                        require: t('errors.require', 'This field is required'),
+                        minLength: {
+                            value: 8,
+                            message: t('errors.password', 'Password needs a minimum of 8 Characters')
                         }
-                    )}
+                    })}
                     autoComplete="current-password"
-                    // onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
                 />
             </FormRowVertical>
-            <FormRowVertical label="Refferal Code">
+            <FormRowVertical label={t('signup.referral', 'Referral Code')}>
                 <Input
                     type="text"
-                    id="Reffral"
-                    // This makes this form better for password managers
-                    autoComplete="username"
-                    defaultValue={""}
-                    // onChange={(e) => setEmail(e.target.value)}
+                    id="referral"
+                    {...registerForm('referral')}
+                    defaultValue={referralCode || ""}  // استفاده از defaultValue برای قرار دادن مقدار پارامتر URL
                     disabled={isLoading}
                 />
             </FormRowVertical>
             <FormRowVertical>
-                <Button
-                    size="large"
-                    disabled={isLoading}
-                >
-                    {!isLoading ? 'Register' : <SpinnerMini />}
+                <Button size="large" disabled={isLoading}>
+                    {!isLoading ? t('signup.signup', 'Create Account') : <SpinnerMini />}
                 </Button>
             </FormRowVertical>
         </Form>

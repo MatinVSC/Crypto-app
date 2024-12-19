@@ -1,26 +1,31 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Menus from '../../ui/Menus';
 import Table from '../../ui/Table';
 
 const Cabin = styled.div`
   font-size: 1.6rem;
   font-weight: 700;
-  color: ${(props) => 
-    props.color === "red" ? "#e74c3c" : 
-    props.color === "green" ? "#27ae60" : 
-    "#34495e"};
+  color: ${(props) =>
+    props.color === "red" ? "#e74c3c" :
+      props.color === "green" ? "#27ae60" :
+        "#34495e"};
   font-family: 'Sono', sans-serif;
   margin-left: 1.2rem;
   letter-spacing: 0.03em;
 
   &:hover {
-    color: ${(props) => 
-      props.color === "red" ? "#c0392b" : 
-      props.color === "green" ? "#2ecc71" : 
-      "#2c3e50"};
+    color: ${(props) =>
+    props.color === "red" ? "#c0392b" :
+      props.color === "green" ? "#2ecc71" :
+        "#2c3e50"};
     transform: scale(1.05);
     transition: all 0.2s ease-in-out;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
   }
 `;
 
@@ -38,6 +43,10 @@ const Stacked = styled.div`
     color: #95a5a6;
     font-size: 1.3rem;
   }
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const Img = styled.img`
@@ -54,8 +63,12 @@ const Img = styled.img`
   &:hover {
     transform: scale(1.2);
   }
-`;
 
+  @media (max-width: 768px) {
+    width: 3rem;
+    height: 3rem;
+  }
+`;
 
 function CoinsRow({
   coin: {
@@ -68,6 +81,7 @@ function CoinsRow({
 }) {
 
   const navigate = useNavigate();
+  const {t} = useTranslation();
 
   const statusChange = change >= 0
     ? "green"
@@ -76,9 +90,12 @@ function CoinsRow({
       : null;
 
   return (
-    <Table.Row role='row'>
+    <Table.Row type="vertical" role='row'>
       <Img src={icon} alt={name} />
-      <Cabin>{name}</Cabin>
+
+      <Stacked>
+        <Cabin>{name}</Cabin>
+      </Stacked>
 
       <Stacked>
         <Cabin>${price}</Cabin>
@@ -92,13 +109,13 @@ function CoinsRow({
         <Menus.Button color="green"
           onClick={() => navigate(`/coins/deposit/${name}/${coinId}`, { state: { price, name } })}
         >
-          Deposit
+          {t('coins.deposit', 'Deposit')}
         </Menus.Button>
 
         <Menus.Button color="red"
           onClick={() => navigate(`/coins/withdraw/${name}/${coinId}`, { state: { price, name } })}
         >
-          Withdraw
+          {t('coins.withdraw', 'Withdraw')}
         </Menus.Button>
       </Menus.Menu>
 

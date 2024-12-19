@@ -1,40 +1,31 @@
-import styled from 'styled-components';
-// import { format } from 'date-fns';
-
-
-// import { formatDistanceFromNow } from 'utils/helpers';
-// import { isToday } from 'date-fns/esm';
-// import { formatCurrency } from 'utils/helpers';
-import {
-  // HiOutlineChatBubbleBottomCenterText,
-  // HiOutlineCheckCircle,
-  HiOutlineCurrencyDollar,
-  HiOutlineHomeModern,
-} from 'react-icons/hi2';
-import DataItem from '../../ui/DataItem';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Form from '../../ui/Form';
-import FormRowVertical from '../../ui/FormRowVertical';
-import Input from '../../ui/Input';
-import { useForm } from 'react-hook-form';
-import Button from '../../ui/Button';
-import SpinnerMini from '../../ui/SpinnerMini';
 import { useQuery } from 'react-query';
 import { useWithdrawCoin } from './useWithdrawCoin';
 import { useEffect } from 'react';
-// import { Flag } from 'ui/Flag';
+import { useTranslation } from 'react-i18next';
+import { HiOutlineCurrencyDollar, HiOutlineHomeModern } from 'react-icons/hi2';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import styled from 'styled-components';
+import DataItem from '../../ui/DataItem';
+import Form from '../../ui/Form';
+import FormRowVertical from '../../ui/FormRowVertical';
+import Input from '../../ui/Input';
+import Button from '../../ui/Button';
+import SpinnerMini from '../../ui/SpinnerMini';
 
 const StyledBookingDataBox = styled.section`
   background-color: var(--color-grey-0);
   border: 1px solid var(--color-grey-100);
   border-radius: var(--border-radius-md);
-
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 1.6rem;
+  }
 `;
 
 const Header = styled.header`
   background-color: var(--color-brand-500);
-  /* padding: 2.4rem 4rem; */
   padding: 2rem 4rem;
   color: #e0e7ff;
   font-size: 1.8rem;
@@ -61,6 +52,12 @@ const Header = styled.header`
     font-size: 2rem;
     margin-left: 4px;
   }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1.2rem;
+    font-size: 1.6rem;
+  }
 `;
 
 const Section = styled.section`
@@ -71,6 +68,11 @@ const Section = styled.section`
   gap: 1.2rem;
   width: 100%;
   padding: 3.2rem 4rem 1.2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
 `;
 
 const Guest = styled.div`
@@ -81,10 +83,14 @@ const Guest = styled.div`
   gap: 1.2rem;
   margin-bottom: 1.6rem;
   color: var(--color-grey-900);
-  
+
   & p:first-of-type {
     font-weight: 500;
     color: var(--color-grey-900);
+  }
+
+  @media (max-width: 768px) {
+    gap: 1rem;
   }
 `;
 
@@ -113,10 +119,15 @@ const Price = styled.div`
     width: 2.4rem;
     color: currentColor !important;
   }
+
+  @media (max-width: 768px) {
+    gap: 1.2rem;
+    padding: 1.2rem 2rem;
+  }
 `;
 
 function CoinWithdrawBox({ coinName, coinId }) {
-  // const [isSucess, setIsSuccess] = useState("");
+  const { t } = useTranslation();
   const { register: withderawForm, formState: { errors }, handleSubmit, watch, setValue } = useForm();
   const { withdrawCoin, isLoading } = useWithdrawCoin();
   const { data: transactionId } = useQuery(["walletWithdraw"], {
@@ -127,24 +138,19 @@ function CoinWithdrawBox({ coinName, coinId }) {
 
   const valueInput = watch('value');
 
-  // useEffect(() => {
-  //   transactionId && setIsSuccess(transactionId);
-  // }, [transactionId])
-
-
   useEffect(() => {
     if (valueInput) {
       const coinDepositValue = (+valueInput / +price).toFixed(2);
-      setValue('coinDepositValue', coinDepositValue)
+      setValue('coinDepositValue', coinDepositValue);
     }
-  }, [valueInput, setValue, price])
+  }, [valueInput, setValue, price]);
 
   function onSubmit({ value, walletAddress }) {
-    value = Number(value)
+    value = Number(value);
 
-    if (!value || !coinId) return
+    if (!value || !coinId || !walletAddress) return;
     withdrawCoin({ value, coinId, walletAddress });
-  };
+  }
 
   return (
     <StyledBookingDataBox>
@@ -152,59 +158,50 @@ function CoinWithdrawBox({ coinName, coinId }) {
         <div>
           <HiOutlineHomeModern />
           <p>
-            Form use Withderaw Value<span>{coinName}</span>
+            {t('coins.withdrawForm', { coinName, defaultValue: `Form use deposit value ${coinName}` })}
           </p>
         </div>
-
       </Header>
 
       <Section>
-
         <Guest>
           <Form type="form" onSubmit={handleSubmit(onSubmit)}>
-            <FormRowVertical label="value USDT" error={errors?.value?.message}>
+            <FormRowVertical label={t('coins.value', 'Value USDT')} error={errors?.value?.message}>
               <Input
                 type="number"
                 id="value"
-                {...withderawForm('value',
-                  {
-                    require: 'This field is required',
-                    pattern: {
-                      value: /^\d+$/,
-                      message: 'Please provide a valid number'
-                    },
-                    min: {
-                      value: 50,
-                      message: "minimum withderaw value is 50 USD. you should withderaw more."
-                    }
+                {...withderawForm('value', {
+                  required: t('errors.require', 'This field is required'),
+                  pattern: {
+                    value: /^\d+$/,
+                    message: t('errors.number', 'Please enter a number')
+                  },
+                  min: {
+                    value: 50,
+                    message: t('errors.withdraw', "The minimum withdraw amount is 50 USD")
                   }
-                )}
-                // This makes this form better for password managers
+                })}
                 autoComplete="value"
                 disabled={isLoading}
               />
             </FormRowVertical>
-            <FormRowVertical label="Wallet Address" error={errors?.walletAddress?.message}>
+            <FormRowVertical label={t('coins.walletAddress', 'Wallet Address')} error={errors?.walletAddress?.message}>
               <Input
                 type="text"
                 id="walletAddress"
-                {...withderawForm('walletAddress',
-                  {
-                    require: 'This field is required',
-                    min: {
-                      value: 26,
-                      message: "Please provide a valid address"
-                    }
+                {...withderawForm('walletAddress', {
+                  required: t('errors.require', 'This field is required'),
+                  minLength: {
+                    value: 26,
+                    message: t('errors.address', 'Please provide a valid address')
                   }
-                )}
-                // This makes this form better for password managers
+                })}
                 autoComplete="walletAddress"
                 disabled={isLoading}
               />
             </FormRowVertical>
 
-            <FormRowVertical label={`Deposit amount is equal to : ${coinName}`}
-              error={errors?.coinDepositValue?.message}>
+            <FormRowVertical label={t('coins.withdrawBox', { coinName, defaultValue: `Withdraw amount is equal to : ${coinName}` })}>
               <Input
                 type="number"
                 id="coinDepositValue"
@@ -215,11 +212,8 @@ function CoinWithdrawBox({ coinName, coinId }) {
             </FormRowVertical>
 
             <FormRowVertical>
-              <Button
-                size="large"
-                disabled={isLoading}
-              >
-                {!isLoading ? 'WITHDRAW' : <SpinnerMini />}
+              <Button size="large" disabled={isLoading}>
+                {!isLoading ? t('coins.withdraw', 'Withdraw') : <SpinnerMini />}
               </Button>
             </FormRowVertical>
           </Form>
@@ -228,23 +222,22 @@ function CoinWithdrawBox({ coinName, coinId }) {
         {transactionId ? (
           <Guest>
             <Price isPaid={true}>
-              <DataItem icon={<HiOutlineCurrencyDollar />} label={`Your Withdraw was Successfuly .`}>
+              <DataItem icon={<HiOutlineCurrencyDollar />} label={t('coins.withdrawSucc', 'Your Withdraw was Successfully')}>
               </DataItem>
-              <p>Transaction id : {transactionId}</p>
+              <p>{t('coins.transactionId', { transactionId, defaultValue: `Transaction id : ${transactionId}` })}</p>
             </Price>
             <Button onClick={() => navigate('/gett')}>
-              see Transactions
+              {t('coins.seeTransactions', 'see Transactions')}
             </Button>
           </Guest>
         ) : (
           <Guest>
             <div>
-              <p>Please set your withdraw values !</p>
+              <p>{t('coins.withdrawValue', 'Please set your withdraw values !')}</p>
             </div>
           </Guest>
         )}
       </Section>
-
     </StyledBookingDataBox>
   );
 }

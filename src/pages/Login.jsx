@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { HiArrowLeftEndOnRectangle } from "react-icons/hi2";
-
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import LoginForm from "../features/authentication/LoginForm";
 import Logo from '../ui/Logo';
@@ -12,6 +12,10 @@ const NavList = styled.ul`
   justify-content: center;
   align-items: center;
   gap: 0.8rem;
+
+  @media (max-width: 768px) {
+    gap: 0.6rem;
+  }
 `;
 
 const StyledNavLink = styled(NavLink)`
@@ -20,7 +24,6 @@ const StyledNavLink = styled(NavLink)`
     display: flex;
     align-items: center;
     gap: 1.2rem;
-
     color: var(--color-grey-600);
     font-size: 1.6rem;
     font-weight: 500;
@@ -28,7 +31,6 @@ const StyledNavLink = styled(NavLink)`
     transition: all 0.3s;
   }
 
-  /* This works because react-router places the active class on the active NavLink */
   &:hover,
   &:active,
   &.active:link,
@@ -51,6 +53,12 @@ const StyledNavLink = styled(NavLink)`
   &.active:visited svg {
     color: var(--color-brand-600);
   }
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+    gap: 1rem;
+    padding: 1rem 1.8rem;
+  }
 `;
 
 const LoginLayout = styled.main`
@@ -61,24 +69,33 @@ const LoginLayout = styled.main`
   justify-content: center;
   gap: 3.2rem;
   background-color: var(--color-grey-50);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 90%;
+    gap: 2.4rem;
+  }
 `;
 
 function Login() {
-  return <LoginLayout>
-    <Logo />
-    <Heading as='h4'>
-      Log in to your account
-    </Heading>
-    <LoginForm />
-    <NavList>
+  const { t } = useTranslation();
+
+  return (
+    <LoginLayout>
+      <Logo />
+      <Heading as='h4'>
+        {t('login.header', 'Login to your account')}
+      </Heading>
+      <LoginForm />
+      <NavList>
         <li>
           <StyledNavLink to="/register">
+            <span>{t('login.register', 'No account created yet ?')}<span style={{ color: "blue" }}>  {t('login.signup', 'Sign Up')}</span></span>
             <HiArrowLeftEndOnRectangle />
-            <span>No account created yet ? <span style={{color: "blue"}}>Sign Up</span></span>
           </StyledNavLink>
         </li>
       </NavList>
-  </LoginLayout>;
+    </LoginLayout>
+  );
 }
 
 export default Login;

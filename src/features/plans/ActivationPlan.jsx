@@ -1,22 +1,17 @@
 import { useForm } from 'react-hook-form';
-
+import { useActivationPlan } from './useActivationPlan';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import FormRow from '../../ui/FormRow';
 import Input from '../../ui/Input';
 import Form from '../../ui/Form';
 import Button from '../../ui/Button';
-import { useActivationPlan } from './useActivationPlan';
-import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 
-// We use react-hook-form to make working with complex and REAL-WORLD forms a lot easier. It handles stuff like user validation and errors. manages the form state for us, etc
-// Validating the user’s data passed through the form is a crucial responsibility for a developer.
-// React Hook Form takes a slightly different approach than other form libraries in the React ecosystem by adopting the use of uncontrolled inputs using ref instead of depending on the state to control the inputs. This approach makes the forms more performant and reduces the number of re-renders.
-
-// Receives closeModal directly from Modal
-function ActivationPlan({ onCloseModal, planId, planName, isSpecial, percentage }) {
+function ActivationPlan({ onCloseModal, planId, planName, isSpecial, percentage, term }) {
+  const { t } = useTranslation();
   const { activationPlan, isLoading } = useActivationPlan();
 
-  // One of the key concepts in React Hook Form is to register your component into the hook. This will make its value available for both the form validation and submission.
   const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm();
 
   const valueInput = watch('value');
@@ -41,26 +36,20 @@ function ActivationPlan({ onCloseModal, planId, planName, isSpecial, percentage 
       }
     })
   };
-  // Invoked when validation fails
+
   const onError = function (errors) {
-    toast.error('Failed validation', errors)
+    toast.error(t('toast.failed', 'Failed validation'), errors)
   };
-
-  // By default, validation happens the moment we submit the form, so when we call handleSubmit. From them on, validation happens on the onChange event [demonstrate]. We cah change that by passing options into useForm ('mode' and 'reValidateMode')
-  // https://react-hook-form.com/api/useform
-
-  // The registered names need to be the same as in the Supabase table. This makes it easier to send the request
-  // "handleSubmit" will validate your inputs before invoking "onSubmit"
 
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)}
       type={onCloseModal ? 'modal' : 'regular'}
     >
-      <FormRow label="Your chosen plan :">
+      <FormRow label={t('plans.choosing', "Your chosen plan :")}>
         <span>{planName}</span>
       </FormRow>
 
-      <FormRow label='Your deposit amount :'
+      <FormRow label={t('plans.deposit', 'Your deposit amount :')}
         error={errors?.value?.message}>
         <Input
           type="number"
@@ -68,21 +57,23 @@ function ActivationPlan({ onCloseModal, planId, planName, isSpecial, percentage 
           disabled={isLoading}
           {...register('value',
             {
-              require: 'This field is required',
+              require: t('errors.require', 'This field is required'),
               pattern: {
                 value: /^\d+$/,
-                message: 'Please provide a valid number'
+                message: t('errors.number', 'Please provide a valid number')
               },
               min: {
                 value: isSpecial ? 150 : 100,
-                message: isSpecial ? "minimum deposit value 150 USDT" : "minimum deposit value 100 USDT"
+                message: isSpecial
+                  ? t('isSpecial.yes', "minimum deposit value 150 USDT")
+                  : t('isSpecial.no', "minimum deposit value 100 USDT")
               }
             }
           )} />
       </FormRow>
 
-      <FormRow label="Interest on your deposit in 30 days :"
-        error={errors?.userInterest?.message}>
+      <FormRow label={t('plans.interestModal', { term }, `Interest on your deposit in ${term} days :`)}
+      >
         <Input
           type="number"
           id="userInterest"
@@ -94,10 +85,10 @@ function ActivationPlan({ onCloseModal, planId, planName, isSpecial, percentage 
 
       <FormRow>
         <Button onClick={() => onCloseModal?.()} variation="secondary" type="reset">
-          Cancel
+          {t('cancel', 'Cancel')}
         </Button>
         <Button disabled={isLoading}>
-          Plan activation
+          {t('plans.choose', 'Plan Activation')}
         </Button>
       </FormRow>
     </Form>

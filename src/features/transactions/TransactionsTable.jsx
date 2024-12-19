@@ -1,16 +1,22 @@
-import TransactionRow from './TransactionRow';
-import Table from '../../ui/Table';
-// import Empty from '../../ui/Empty';
-import Menus from '../../ui/Menus';
 import { useCoins } from '../coins/useCoins';
 import { useMemo, useState } from 'react';
-import Pagination from '../../ui/Pagination';
 import { PAGE_SIZE } from '../../utils/constants';
+import { useTranslation } from 'react-i18next';
+import TransactionRow from './TransactionRow';
+import Table from '../../ui/Table';
+import Menus from '../../ui/Menus';
+import Pagination from '../../ui/Pagination';
+import styled from 'styled-components';
+
+const TableName = styled.div`
+  margin-left: 1rem;
+`;
 
 
-function TransactionsTable({ depositTransaction, withdrawTransaction, statusUrl, isLoading }) {
+function TransactionsTable({ depositTransaction, withdrawTransaction, statusUrl }) {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
-  const { coinsData, isLoading: isLoadingCoins } = useCoins();
+  const { coinsData } = useCoins();
   const currentFild = statusUrl === 'deposit' ? depositTransaction : withdrawTransaction;
 
   const currentTransactions = useMemo(() => {
@@ -23,13 +29,12 @@ function TransactionsTable({ depositTransaction, withdrawTransaction, statusUrl,
 
   return (
     <Menus>
-      {/* A beautiful API we created here! We could even have defined the widths on the columns in the table header individually, but this keeps it simpler, and I also really like it */}
-      <Table columns='1fr 200px 1fr 200px'>
-        <Table.Header>
-          <div style={{ marginLeft: "4.5rem" }}>Coin</div>
-          <div>Value</div>
-          <div style={{ marginLeft: "4.5rem" }}>Dates</div>
-          <div style={{ marginLeft: "1.5rem" }}>Status</div>
+      <Table columns='1fr 1fr 1fr 1fr'>
+        <Table.Header type="horizontal">
+          <TableName>{t('coins.coin', 'Coin')}</TableName>
+          <TableName>{t('transaction.value', 'Value')}</TableName>
+          <TableName>{t('transaction.date', 'Dates')}</TableName>
+          <TableName>{t('transaction.status', 'Status')}</TableName>
         </Table.Header>
 
         {currentTransactions.map((transactionData) => (
@@ -51,9 +56,6 @@ function TransactionsTable({ depositTransaction, withdrawTransaction, statusUrl,
       </Table>
     </Menus>
   );
-}
-
-// We could create yet another layer of abstraction on top of this. We could call this component just <Results>, like: Results({data, count, isLoading, columns, rowComponent}). Then <BookingTable> and ALL other tables would simply call that.
-// BUT, creating more abstractions also has a cost! More things to remember, more complex codebase to understand. Sometimes it's okay to just copy and paste instead of creating abstractions
+};
 
 export default TransactionsTable;

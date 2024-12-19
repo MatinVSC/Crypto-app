@@ -101,7 +101,6 @@ const StyledBody = styled.section`
   padding: 2rem;
 
   @media (max-width: 768px) {
-    background-color: red;
     grid-template-columns: 1fr;
     gap: 2rem;
   }

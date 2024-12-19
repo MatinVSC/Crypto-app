@@ -37,7 +37,6 @@ const StyledSidebar = styled.aside`
     left: ${(props) => (props.openSidebar ? "0" : "-100%")};
     animation: ${(props) => (props.openSidebar ? slideIn : slideOut)} 0.3s forwards;
     z-index: 10;
-    background-color: orange;
   }
 `;
 

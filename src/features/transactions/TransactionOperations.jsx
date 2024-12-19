@@ -1,19 +1,17 @@
-// import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Filter from '../../ui/Filter';
 import TableOperations from '../../ui/TableOperations';
 
-// { depositTransaction, withdrawTransaction }
-
 function TransactionOperations() {
+    const { t } = useTranslation();
 
     return (
         <TableOperations>
-            {/* We could do these two as compound components as well, but let's keep it simple, and let's also explore different ways of achieving the same thing */}
             <Filter
                 filterField={'status'}
                 options={[
-                    { value: 'deposit', label: 'Deposit Transactions' },
-                    { value: 'withdraw', label: 'withdraw Transactions' },
+                    { value: 'deposit', label: t('filter.depositT', 'Deposit Transactions') },
+                    { value: 'withdraw', label: t('filter.withdrawT', 'Deposit Transactions') },
                 ]}
             />
         </TableOperations>

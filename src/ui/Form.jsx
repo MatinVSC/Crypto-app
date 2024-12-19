@@ -13,7 +13,6 @@ const Form = styled.form`
 
       @media (max-width: 768px) {
         padding: 1.2rem 2rem;
-        background-color: #04a304;
       }
     `}
 
