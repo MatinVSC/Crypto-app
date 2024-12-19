@@ -1,13 +1,13 @@
-import CheckoutButton from 'features/check-in-out/CheckoutButton';
 import { Link } from 'react-router-dom';
+import { Flag } from '../../ui/Flag';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import Button from 'ui/Button';
-import { Flag } from 'ui/Flag';
-import Tag from 'ui/Tag';
+import Button from '../../ui/Button';
+import Tag from '../../ui/Tag';
 
 const StyledTodayItem = styled.li`
   display: grid;
-  grid-template-columns: 9rem 2rem 1fr 7rem 9rem;
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.2rem;
   align-items: center;
 
@@ -18,50 +18,40 @@ const StyledTodayItem = styled.li`
   &:first-child {
     border-top: 1px solid var(--color-grey-100);
   }
-  /* &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  } */
 `;
 
 const Guest = styled.div`
   font-weight: 500;
 `;
 
-function TodayItem({ stay }) {
-  const { id, status, guests, numNights } = stay;
-
-  const statusToAction = {
-    unconfirmed: {
-      action: 'arriving',
-      tag: 'green',
-      button: (
-        <Button
-          variation='primary'
-          size='small'
-          as={Link}
-          to={`/checkin/${id}`}
-        >
-          Check in
-        </Button>
-      ),
-    },
-    'checked-in': {
-      action: 'departing',
-      tag: 'blue',
-      button: <CheckoutButton bookingId={id} />,
-    },
-  };
+function TodayItem({ transaction }) {
+  const { t } = useTranslation();
+  const { code, icon, status, value } = transaction;
 
   return (
     <StyledTodayItem>
-      <Tag type={statusToAction[status].tag}>
-        {statusToAction[status].action}
-      </Tag>
-      <Flag src={guests.countryFlag} alt={`Flag of ${guests.country}`} />
-      <Guest>{guests.fullName}</Guest>
-      <div>{numNights} nights</div>
+      {status === 1 && <Tag type='green'>{t('transaction.success', 'Success')}</Tag>}
+      {status === 0 && <Tag type='blue'>{t('transaction.pending', 'Pending')}</Tag>}
+      {status === -1 && <Tag type='red'>{t('transaction.failed', 'Failded')}</Tag>}
 
-      {statusToAction[status].button}
+      <Flag
+        src={icon}
+        alt={`Flag on ${code}`}
+      >
+      </Flag>
+
+      <Guest>{code}</Guest>
+      <div>${value}</div>
+
+      <Button
+        size='small'
+        variation='primary'
+        as={Link}
+        to={`/gett`}
+      >
+        {t('transaction.details', 'Details')}
+      </Button>
+
     </StyledTodayItem>
   );
 }

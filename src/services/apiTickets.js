@@ -1,10 +1,10 @@
 import toast from "react-hot-toast";
 import { BASE_URL } from "../utils/baseUrl";
-import { userSession } from "../utils/useSession";
+import { getUserSession } from "../utils/useSession";
 
 // get user data
 export async function getUserTickets() {
-
+    const userSession = getUserSession();
     try {
         const response = await fetch(`${BASE_URL}/getTickets`, {
             method: 'POST',
@@ -28,6 +28,7 @@ export async function getUserTickets() {
 
 // get ticket user id 
 export async function getTicketId({ ticketId }) {
+    const userSession = getUserSession();
     try {
         const response = await fetch(`${BASE_URL}/getTicket/${ticketId}`, {
             method: 'POST',
@@ -51,7 +52,7 @@ export async function getTicketId({ ticketId }) {
 
 // get send new ticket
 export async function getSendTicket({ subject, topic, description }) {
-
+    const userSession = getUserSession();
     try {
         const response = await fetch(`${BASE_URL}/newTicket`, {
             method: 'POST',
@@ -77,7 +78,9 @@ export async function getSendTicket({ subject, topic, description }) {
 
 // get reolay ticket
 export async function getReplayTicket({ ticketId: ticket, content }) {
-
+    console.log({ticket, content});
+    
+    const userSession = getUserSession();
     try {
         const response = await fetch(`${BASE_URL}/sendMessage`, {
             method: 'POST',
