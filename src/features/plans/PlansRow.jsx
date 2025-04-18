@@ -1,8 +1,9 @@
-import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import Table from '../../ui/Table';
 import Modal from '../../ui/Modal';
 import ActivationPlan from './ActivationPlan';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 const Card = styled.div`
   background-color: ${(props) => (props.special ? "#f0faff" : "#ffffff")};
@@ -138,20 +139,33 @@ function PlansRow({ plans }) {
     duration: `Investment duration : ${time} days`,
   }
 
-  const { price, interest, duration } = processedData;
+  const { price, interest, duration, title } = processedData;
 
   return (
     <Table.Plans type={"vertical"}>
       <Card special={processedData.special}>
         <Title special={processedData.special}>
-          {processedData.title}
+          {title}
         </Title>
         <Price special={processedData.special}>
-          {t('plans.invest', { min }, `${price}`)}
+          {i18n.language === 'en'
+            ? `${price}`
+            : t('plans.invest', { min })
+          }
         </Price>
         <Features>
-          <Feature>{t('plans.interest', { percentage, term }, `${interest}`)}</Feature>
-          <Feature>{t('plans.duration', { time }, `${duration}`)}</Feature>
+          <Feature>
+            {i18n.language === 'en'
+              ? `${interest}`
+              : t('plans.interest', { percentage, term })
+            }
+          </Feature>
+          <Feature>
+            {i18n.language === 'en'
+              ? `${duration}`
+              : t('plans.duration', { time })
+            }
+          </Feature>
           <Feature>
             {
               cancelable
