@@ -1,6 +1,13 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
+@font-face {
+  font-family: 'Vazir';
+  src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   /* Indigo */
   --color-brand-50: #eef2ff;
@@ -71,6 +78,8 @@ html {
   font-size: 62.5%;
 }
 
+
+
 body {
   font-family: "Poppins", sans-serif;
   color: var(--color-grey-700);
@@ -79,6 +88,22 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   font-size: 1.6rem;
+  
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+  }
+}
+
+html.rtl body {
+  font-family: "Vazir", sans-serif;
+}
+
+body, button, input, textarea, select {
+  font-family: 'Vazir', sans-serif;
+}
+
+.rtl body, .rtl button, .rtl input, .rtl textarea, .rtl select {
+  font-family: 'Vazir', sans-serif;
 }
 
 input,
@@ -142,7 +167,6 @@ img {
   /* For dark mode */
   filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
 }
-
 `;
 
 export default GlobalStyles;
